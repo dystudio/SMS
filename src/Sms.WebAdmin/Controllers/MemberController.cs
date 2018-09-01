@@ -29,7 +29,7 @@ namespace Sms.WebAdmin.Controllers
             //搜索关键字过滤
             if (!string.IsNullOrEmpty(keyword))
             {
-                list = list.Where(c => c.CardNo.Contains(keyword) || c.Mobile.Contains(keyword));
+                list = list.Where(c => c.CardNo.Contains(keyword) || c.Mobile.Contains(keyword) || c.Name.Contains(keyword));
             }
             list = list.OrderByDescending(c => c.CreateTime);
             var pagerList = list.ToPagedList(PageIndex, ConstFiled.PageSize);
@@ -90,6 +90,7 @@ namespace Sms.WebAdmin.Controllers
                     model.Banlance = 0;
                     model.TotalMoney = 0;
                     model.TotalPresent = 0;
+                    model.TotalDiscount = 0;
                     model.Password = SecurityHelper.MD5(model.Password);
                     model.CreateTime = DateTime.Now;
                     model.CreateUser = CurrentLoginUser.UserName;
@@ -100,13 +101,15 @@ namespace Sms.WebAdmin.Controllers
                         _repositoryFactory.ICardHistory.Add(new CardHistory()
                         {
                             CardNo = model.CardNo,
-                            Value = (decimal)promote.Money,
+                            PracticalValue = promote.Money.Value,
+                            PromotionValue = promote.Money.Value,
+                            Value = 0,
                             CreateTime = DateTime.Now,
-                            CreateUser = "system",
-                            Type = 1,
-                            Remark = $"参与促销活动【{promote.Title}】赠送{promote.Money}元"
+                            CreateUser = model.CreateUser,
+                            Type = (int)EnumHepler.BillType.Register_Gifts,
+                            Remark = $"参与促销活动[{promote.Title}]赠送{promote.Money}元"
                         });
-                        model.Banlance += promote.Money;
+                        model.Banlance += promote.Money.Value;
                         model.TotalPresent += promote.Money;
                     }
                     _repositoryFactory.IMemberCard.Add(model);
@@ -363,30 +366,23 @@ namespace Sms.WebAdmin.Controllers
                 if (card != null)
                 {
                     //写充值记录
-                    model.Type = 1;//充值类型为1
+                    model.Type = (int)EnumHepler.BillType.Charge;
                     model.CreateTime = DateTime.Now;
                     model.CreateUser = user.UserName;
-                    model.Remark = $"管理员[{user.UserName}]为会员卡【{model.CardNo}】充值{model.Value}元";
-                    _repositoryFactory.ICardHistory.Add(model);
-                    //更新会员卡信息
-                    card.Banlance += model.Value;
-                    card.TotalMoney += model.Value;
+                    model.Remark = $"管理员[{user.UserName}]为会员卡[{model.CardNo}]充值{model.Value}元";
                     //查找是否有优惠
                     var promote = GetAvailablePromotion(EnumHepler.PromotionType.Charge, model.Value);
                     if (promote != null)
                     {
-                        _repositoryFactory.ICardHistory.Add(new CardHistory()
-                        {
-                            CardNo = model.CardNo,
-                            Value = (decimal)promote.Money,
-                            CreateTime = DateTime.Now,
-                            CreateUser = "system",
-                            Type = 3,
-                            Remark = $"参与促销活动【{promote.Title}】赠送{promote.Money}元"
-                        });
-                        card.Banlance += promote.Money;
-                        card.TotalPresent += promote.Money;
+                        model.PromotionValue = promote.Money.Value;
+                        model.Remark += $"<br /> P：[{promote.Title}] 赠送{promote.Money}元";
                     }
+                    model.PracticalValue = model.Value + model.PromotionValue;
+                    _repositoryFactory.ICardHistory.Add(model);
+                    //更新会员卡信息
+                    card.Banlance += model.PracticalValue;//余额
+                    card.TotalMoney += model.Value;//累计充值
+                    card.TotalPresent += model.PromotionValue;//累计赠送
                     //写系统日志
                     WriteLog(model.Remark);
                     //保存数据
@@ -418,7 +414,7 @@ namespace Sms.WebAdmin.Controllers
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.View)]
         public ActionResult ChargeHistory(DateTime? start, DateTime? end, string keyword = "")
         {
-            var list = _repositoryFactory.ICardHistory.Where(c => c.Type == 1 || c.Type == 3);
+            var list = _repositoryFactory.ICardHistory.Where(c => c.Type == (int)EnumHepler.BillType.Register_Gifts || c.Type == (int)EnumHepler.BillType.Charge);
             //搜索关键字过滤
             if (start != null)
             {
@@ -460,14 +456,7 @@ namespace Sms.WebAdmin.Controllers
             if (entity != null)
             {
                 _repositoryFactory.ICardHistory.Delete(entity);
-                string type = "";
-                switch (entity.Type)
-                {
-                    case 1: type = "充值"; break;
-                    case 2: type = "消费"; break;
-                    case 3: type = "充值赠送"; break;
-                }
-                WriteLog($"删除了一条{type}记录，内容：{entity.Remark}");
+                WriteLog($"删除了会员卡{entity.CardNo}记录，内容：{entity.Remark}");
                 if (await _repositoryFactory.SaveChanges() > 0)
                 {
                     return Json(new TipMessage() { Status = true, MsgText = "删除成功" }, JsonRequestBehavior.DenyGet);
@@ -504,30 +493,28 @@ namespace Sms.WebAdmin.Controllers
                     var promote = GetAvailablePromotion(EnumHepler.PromotionType.Consume, model.Value);
                     if (promote != null)
                     {
-                        model.Value -= (decimal)promote.Money;
+                        model.PromotionValue = promote.Money.Value;
+                        model.Remark += $" <br /> P：[{promote.Title}] 优惠{promote.Money}元";
                     }
-                    if (card.Banlance < model.Value)
+                    model.PracticalValue = model.Value - model.PromotionValue;
+                    if (card.Banlance < model.PracticalValue)
                     {
-                        return ShowResultMessage(new TipMessage() { Status = false, MsgText = "会员卡余额不足！" });
+                        return ShowResultMessage(new TipMessage() { Status = false, MsgText = $"会员卡余额不足！折扣：{model.PromotionValue}，待支付：{model.PracticalValue}" });
                     }
                     //写消费记录
-                    model.Type = 2;//消费类型为2
+                    model.Type = (int)EnumHepler.BillType.Pay;
                     model.CreateTime = DateTime.Now;
                     model.CreateUser = user.UserName;
-                    if (promote != null)
-                    {
-                        model.Remark += $" / 参与促销活动【{promote.Title}】优惠{promote.Money}元";
-                    }
-                    //model.Remark = $"会员卡【{model.CardNo}】消费{model.Value}元，备注：{model.Remark}";
                     _repositoryFactory.ICardHistory.Add(model);
                     //更新会员卡信息
-                    card.Banlance -= model.Value;
+                    card.Banlance -= model.PracticalValue;//余额
+                    card.TotalDiscount += model.PromotionValue;//累计折扣
                     //写系统日志
-                    WriteLog($"会员卡【{model.CardNo}】消费{model.Value}元，备注：{model.Remark}");
+                    WriteLog($"管理员[{user.UserName}]为会员卡[{model.CardNo}]消费{model.Value}元，备注：{model.Remark}");
                     //保存数据
                     if (await _repositoryFactory.SaveChanges() > 0)
                     {
-                        return ShowResultMessage(new TipMessage() { Status = true, MsgText = "消费成功！" }, "ClearConsume();");
+                        return ShowResultMessage(new TipMessage() { Status = true, MsgText = $"消费成功！{(model.PromotionValue > 0 ? $"本次省下{model.PromotionValue}元" : "")}" }, "ClearConsume();");
                     }
                     else
                     {
@@ -554,7 +541,7 @@ namespace Sms.WebAdmin.Controllers
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.View)]
         public ActionResult OrderHistory(DateTime? start, DateTime? end, string keyword = "")
         {
-            var list = _repositoryFactory.ICardHistory.Where(c => c.Type == 2);
+            var list = _repositoryFactory.ICardHistory.Where(c => c.Type == (int)EnumHepler.BillType.Pay);
             //搜索关键字过滤
             if (start != null)
             {

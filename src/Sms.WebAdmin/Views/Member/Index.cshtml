@@ -22,7 +22,7 @@
             @using (Html.BeginForm("Index", "Member", new { page = 1 }, FormMethod.Get))
             {
                 <p>
-                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "会员卡号、手机号", style = "margin:0px 10px" })
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "会员卡号、手机号、姓名", style = "margin:0px 10px" })
                     <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' ) { return false; }" />
                     &nbsp;
                     <button class="btn  btn-primary" title="" onclick="Export();return false;"><i class="icon-download-alt  icon-white"></i>  导出</button>
@@ -33,13 +33,14 @@
             <table class="table table-bordered table-striped with-check">
                 <thead>
                     <tr>
-                        <th style="width: 15%">会员卡号</th>
+                        <th style="width: 13%">会员卡号</th>
                         <th>真实姓名</th>
                         <th>手机号</th>
                         <th>性别</th>
                         <th>账户余额</th>
                         <th>累计充值</th>
                         <th>累计赠送</th>
+                        <th>累计折扣</th>
                         <th>创建时间</th>
                         <th>状态</th>
                         <th>操作</th>
@@ -51,40 +52,41 @@
                         {
                             foreach (var item in Model)
                             {
-                                <tr>
-                                    <td class="center" style="width: 20%;font-size:16px;font-weight:600">
-                                        @item.CardNo
-                                    </td>
-                                    <td class="center">@item.Name</td>
-                                    <td class="center">@item.Mobile</td>
-                                    <td class="center">@item.Sex</td>
-                                    <td class="center" style="font-size:16px;font-weight:600;color:#08c">@item.Banlance</td>
-                                    <td class="center">@item.TotalMoney</td>
-                                    <td class="center">@item.TotalPresent</td>
-                                    <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
-                                    <td class="center">
-                                        @Html.Raw(item.Status == (int)EnumHepler.UserStatus.Available ? "<i class=\"icon-ok tip-bottom\" title=\"有效\"></i>" : (item.Status == (int)EnumHepler.UserStatus.Lock ? "<i class=\"icon-remove tip-bottom\" title=\"已锁定\"></i>" : ""))
-                                    </td>
-                                    <td class="center">
-                                        <a href="@Url.Action("Edit", new { no = item.CardNo })" class="btn btn-mini tip-bottom" data-original-title="编辑"><i class="icon-pencil"></i></a>
-                                        @if (item.Status == (int)EnumHepler.UserStatus.Available)
-                                        {
-                                            <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="禁用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Locked));"><i class="icon-lock icon-white"></i></a>
-                                        }
-                                        else if (item.Status == (int)EnumHepler.UserStatus.Lock)
-                                        {
-                                            <a href="javascript:" class="btn btn-mini btn-success tip-bottom" title="启用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Available));"><i class="icon-check icon-white"></i></a>
-                                        }
-                                        <a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置消费密码" onclick="SetPassword('@item.CardNo',1)"><i class="icon-cog"></i></a>
-                                        <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="MemberDelete(this,'@item.CardNo');"><i class="icon-trash icon-white"></i></a>
-                                    </td>
-                                </tr>
+                    <tr>
+                        <td class="center" style="width: 13%;font-size:16px;font-weight:600">
+                            @item.CardNo
+                        </td>
+                        <td class="center">@item.Name</td>
+                        <td class="center">@item.Mobile</td>
+                        <td class="center">@item.Sex</td>
+                        <td class="center" style="font-size:16px;font-weight:600;color:#08c">@item.Banlance</td>
+                        <td class="center">@item.TotalMoney</td>
+                        <td class="center">@item.TotalPresent</td>
+                        <td class="center">@item.TotalDiscount</td>
+                        <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                        <td class="center">
+                            @Html.Raw(item.Status == (int)EnumHepler.UserStatus.Available ? "<i class=\"icon-ok tip-bottom\" title=\"有效\"></i>" : (item.Status == (int)EnumHepler.UserStatus.Lock ? "<i class=\"icon-remove tip-bottom\" title=\"已锁定\"></i>" : ""))
+                        </td>
+                        <td class="center">
+                            <a href="@Url.Action("Edit", new { no = item.CardNo })" class="btn btn-mini tip-bottom" data-original-title="编辑"><i class="icon-pencil"></i></a>
+                            @if (item.Status == (int)EnumHepler.UserStatus.Available)
+        {
+                    <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="禁用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Locked));"><i class="icon-lock icon-white"></i></a>
+}
+else if (item.Status == (int)EnumHepler.UserStatus.Lock)
+{
+                    <a href="javascript:" class="btn btn-mini btn-success tip-bottom" title="启用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Available));"><i class="icon-check icon-white"></i></a>
+}
+                            <a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置消费密码" onclick="SetPassword('@item.CardNo',1)"><i class="icon-cog"></i></a>
+                            <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="MemberDelete(this,'@item.CardNo');"><i class="icon-trash icon-white"></i></a>
+                        </td>
+                    </tr>
                             }
                         }
                         else
                         {
                             <tr style="">
-                                <td colspan="10">
+                                <td colspan="11">
                                     <div class="list-none-data">  -- 暂无记录 -- </div>
                                 </td>
                             </tr>

@@ -179,7 +179,9 @@ namespace Sms.WebAdmin.Controllers
         protected Promotion GetAvailablePromotion(EnumHepler.PromotionType type, decimal min)
         {
             Promotion model = null;
-            var promote = _repositoryFactory.IPromotion.Where(m => m.Type == (int)type && m.Status == (int)EnumHepler.PromotionStatus.Available && m.StartDate < DateTime.Now && m.EndDate > DateTime.Now).OrderByDescending(m => m.CreateTime).OrderByDescending(m => m.MinValue).ToList();
+            DateTime start = DateTime.Now;
+            DateTime end = start.AddDays(-1);
+            var promote = _repositoryFactory.IPromotion.Where(m => m.Type == (int)type && m.Status == (int)EnumHepler.PromotionStatus.Available && m.StartDate < start && m.EndDate > end).OrderByDescending(m => m.MinValue).ThenByDescending(m => m.CreateTime).ToList();
             foreach (var item in promote)
             {
                 if (min >= item.MinValue)

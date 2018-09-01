@@ -23,7 +23,7 @@
             {
                 <p>
                     @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "关键字", style = "margin:0px 10px" })
-                    @Html.DropDownList("type", ViewBag.ddlType as SelectList, null, new { @id = "type", style = "width:100px" })
+                    @Html.DropDownList("type", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.LogType)), "Value", "Key"), null, new { @id = "type", style = "width:100px" })
                     <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' && $('#type').val() == '') { return false; }" />
                 </p>
             }

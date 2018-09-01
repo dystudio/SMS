@@ -17,6 +17,8 @@
             <div class="widget-box">
                 @using (Ajax.BeginForm("Edit", "Promotion", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "EditPromotion" }))
                 {
+                    if (Model != null) { @Html.HiddenFor(m => m.Id); }
+                    
                     <div class="widget-title">
                         <span class="icon">
                             <i class="icon-pencil"></i>
@@ -43,12 +45,14 @@
                             <label class="control-label">开始日期</label>
                             <div class="controls">
                                 @Html.TextBoxFor(model => model.StartDate)
+                                00:00:00
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">结束日期</label>
                             <div class="controls">
                                 @Html.TextBoxFor(model => model.EndDate)
+                                23:59:59
                             </div>
                         </div>
                         <div class="control-group">
@@ -88,7 +92,7 @@
                             </li>
                         </ul>
                     </div>
-                                    }
+                }
             </div>
         </div>
     </div>

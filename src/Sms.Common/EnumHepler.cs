@@ -64,6 +64,21 @@ namespace Sms.Common
         }
 
         /// <summary>
+        /// 会员卡账单类型
+        /// </summary>
+        public enum BillType
+        {
+            [Description("注册赠送")]
+            Register_Gifts = 1,
+
+            [Description("充值")]
+            Charge = 2,
+
+            [Description("消费")]
+            Pay = 3
+        }
+
+        /// <summary>
         /// 日志类型
         /// </summary>
         public enum LogType

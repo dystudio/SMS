@@ -21,9 +21,10 @@ namespace Sms.Entity
         public string Sex { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public string CreateUser { get; set; }
-        public Nullable<int> Status { get; set; }
-        public Nullable<decimal> Banlance { get; set; }
+        public int Status { get; set; }
+        public decimal Banlance { get; set; }
         public Nullable<decimal> TotalMoney { get; set; }
         public Nullable<decimal> TotalPresent { get; set; }
+        public Nullable<decimal> TotalDiscount { get; set; }
     }
 }

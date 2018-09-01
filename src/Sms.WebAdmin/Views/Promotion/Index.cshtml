@@ -21,10 +21,11 @@
         <div class="widget-content">
             @using (Html.BeginForm("Index", "Promotion", new { page = 1 }, FormMethod.Get))
             {
-                <p>
-                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "标题", style = "margin:0px 10px" })
-                    <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' ) { return false; }" />
-                </p>
+            <p>
+                @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "标题", style = "margin:0px 10px" })
+                @Html.DropDownList("type", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.PromotionType)), "Value", "Key"), null, new { @id = "type", style = "width:130px" })
+                <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' && $('#type').val() == '') { return false; }" />
+            </p>
             }
         </div>
         <div class="widget-content nopadding">
@@ -32,10 +33,10 @@
                 <thead>
                     <tr>
                         <th style="width: 22%">标题</th>
-                        <th style="width: 15%">促销时间</th>
+                        <th style="width: 18%">促销时间</th>
                         <th>类型</th>
                         <th style="width: 8%">最低金额</th>
-                        <th style="width: 10%">满减 / 赠送 金额</th>
+                        <th style="width: 8%">满减 / 赠送</th>
                         <th>创建时间</th>
                         <th>创建人</th>
                         <th>状态</th>
@@ -52,11 +53,15 @@
                                     <td class="center">
                                         @item.Title
                                     </td>
-                                    <td class="center">@string.Format("{0:yyyy-MM-dd}", item.StartDate) 至 @string.Format("{0:yyyy-MM-dd}", item.EndDate)</td>
+                                    <td class="center">
+                                    @string.Format("{0:yyyy-MM-dd}", item.StartDate) 
+                                    至
+                                    @string.Format("{0:yyyy-MM-dd}", item.EndDate)</td>
                                     <td class="center">@EnumHepler.GetEnumDescription((EnumHepler.PromotionType)item.Type)</td>
                                     <td class="center">@item.MinValue</td>
                                     <td class="center">@item.Money</td>
-                                    <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                                    <td class="center">
+                                    @string.Format("{0:yyyy-MM-dd HH:mm}", item.CreateTime)</td>
                                     <td class="center">@item.CreateUser</td>
                                     <td class="center">
                                         @EnumHepler.GetEnumDescription((EnumHepler.PromotionStatus)item.Status)
@@ -110,6 +115,9 @@
 </div>
 @section foot{
     <script type="text/javascript">
+        $(function () {
+            $("select").select2();
+        });
         //更改状态
         function SetStatus(id, status) {
             if (confirm('确认要执行操作吗？')) {

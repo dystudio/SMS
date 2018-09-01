@@ -12,40 +12,44 @@ namespace Sms.WebAdmin.Controllers
 {
     public class ReportController : BaseController
     {
+        int charge = (int)EnumHepler.BillType.Charge;
+        int pay = (int)EnumHepler.BillType.Pay;
+
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.View)]
         public async Task<ActionResult> Index()
         {
             DateTime nextDay = DateTime.Today.AddDays(1);
             //今日新增会员卡
             ViewData["TodayNewCard"] = await _repositoryFactory.IMemberCard.CountAsync(m => m.CreateTime >= DateTime.Today && m.CreateTime < nextDay);
+
             //会员卡总数
             ViewData["TotalCard"] = await _repositoryFactory.IMemberCard.CountAsync(m => true);
+
             //今日销售总额
-            var TodayOrderMoney = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= DateTime.Today && m.CreateTime < nextDay && m.Type == 2).Select(m => m.Value);
-            ViewData["TodayOrderMoney"] = 0.00;
-            if (TodayOrderMoney.Any())
-            {
-                ViewData["TodayOrderMoney"] = TodayOrderMoney.Sum();
-            }
+            var TodayOrderMoney = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= DateTime.Today && m.CreateTime < nextDay && m.Type == pay).Select(m => m.PracticalValue);
+            ViewData["TodayOrderMoney"] = TodayOrderMoney.DefaultIfEmpty().Sum();
+
             //历史销售总额
-            ViewData["TotalOrderMoney"] = _repositoryFactory.ICardHistory.Where(m => m.Type == 2).Select(m => m.Value).Sum();
+            var TotalOrderMoney = _repositoryFactory.ICardHistory.Where(m => m.Type == pay).Select(m => m.PracticalValue);
+            ViewData["TotalOrderMoney"] = TotalOrderMoney.DefaultIfEmpty().Sum();
+
             //今日充值总额
-            var TodayChargeMoney = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= DateTime.Today && m.CreateTime < nextDay && m.Type == 1).Select(m => m.Value);
-            ViewData["TodayChargeMoney"] = 0.00;
-            if (TodayChargeMoney.Any())
-            {
-                ViewData["TodayChargeMoney"] = TodayChargeMoney.Sum();
-            }
+            var TodayChargeMoney = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= DateTime.Today && m.CreateTime < nextDay && m.Type == charge).Select(m => m.Value);
+            ViewData["TodayChargeMoney"] = TodayChargeMoney.DefaultIfEmpty().Sum();
+
             //本月充值总额
             DateTime thisMonth = DateTime.Today.AddDays(-DateTime.Today.Day + 1);
-            ViewData["MonthChargeMoney"] = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= thisMonth && m.CreateTime < nextDay && m.Type == 1).Select(m => m.Value).Sum();
+            var MonthChargeMoney = _repositoryFactory.ICardHistory.Where(m => m.CreateTime >= thisMonth && m.CreateTime < nextDay && m.Type == charge).Select(m => m.Value);
+                ViewData["MonthChargeMoney"] = MonthChargeMoney.DefaultIfEmpty().Sum();
+
             //历史充值总额
-            ViewData["TotalChargeMoney"] = _repositoryFactory.ICardHistory.Where(m => m.Type == 1).Select(m => m.Value).Sum();
+            ViewData["TotalChargeMoney"] = _repositoryFactory.ICardHistory.Where(m => m.Type == charge).Select(m => m.Value).DefaultIfEmpty().Sum();
+
             //会员卡总余额
-            ViewData["TotalBanlance"] = _repositoryFactory.IMemberCard.Where(m => true).Select(m => m.Banlance).Sum();
+            ViewData["TotalBanlance"] = _repositoryFactory.IMemberCard.Where(m => true).Select(m => m.Banlance).DefaultIfEmpty().Sum();
             return View();
         }
-
+        
 
         #region 图标异步方法
 
@@ -75,14 +79,14 @@ namespace Sms.WebAdmin.Controllers
         public JsonResult WeekOrder()
         {
             DateTime weekStart = DateTime.Today.AddDays(-6);
-            var data = _repositoryFactory.ICardHistory.Where(m => m.Type == 2 && m.CreateTime >= weekStart).Select(m => new { m.CreateTime, m.Value }).ToList();
+            var data = _repositoryFactory.ICardHistory.Where(m => m.Type == pay && m.CreateTime >= weekStart).Select(m => new { m.CreateTime, m.PracticalValue }).ToList();
             List<string> title = new List<string>();
             List<decimal> value = new List<decimal>();
             for (int i = 6; i >= 0; i--)
             {
                 string format = DateTime.Today.AddDays(-i).ToString("yyyy-MM-dd");
                 title.Add(format);
-                value.Add(data.Where(m => m.CreateTime.Value.ToString("yyyy-MM-dd").Equals(format)).Sum(m => m.Value));
+                value.Add(data.Where(m => m.CreateTime.Value.ToString("yyyy-MM-dd").Equals(format)).Sum(m => m.PracticalValue));
             }
             return Json(new TipMessage() { Status = true, MsgText = "获取数据成功！", Data = new { legend = title, value = value } }, JsonRequestBehavior.DenyGet);
         }
@@ -95,7 +99,7 @@ namespace Sms.WebAdmin.Controllers
         public JsonResult WeekCharge()
         {
             DateTime weekStart = DateTime.Today.AddDays(-6);
-            var data = _repositoryFactory.ICardHistory.Where(m => m.Type == 1 && m.CreateTime >= weekStart).Select(m => new { m.CreateTime, m.Value }).ToList();
+            var data = _repositoryFactory.ICardHistory.Where(m => m.Type == charge && m.CreateTime >= weekStart).Select(m => new { m.CreateTime, m.Value }).ToList();
             List<string> title = new List<string>();
             List<decimal> value = new List<decimal>();
             for (int i = 6; i >= 0; i--)
@@ -163,7 +167,7 @@ namespace Sms.WebAdmin.Controllers
         public ActionResult ConsumeCountRank()
         {
             var list = (from db in new Entity.SmsEntities().CardHistory
-                        where db.Type == 2
+                        where db.Type == pay
                         group db by db.CardNo into g
                         orderby g.Count() descending
                         select new { CradNo = g.Key, Count = g.Count() }).Take(10).ToList();

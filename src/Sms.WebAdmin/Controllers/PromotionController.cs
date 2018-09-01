@@ -68,8 +68,11 @@ namespace Sms.WebAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                string editMode = Request.Params["mode"];
-                if (editMode == "edit")
+                if (model.StartDate >= model.EndDate)
+                {
+                    return ShowResultMessage(new TipMessage() { Status = false, MsgText = "开始日期必须小于结束日期！"});
+                }
+                if (model.Id>0)
                 {
                     _repositoryFactory.IPromotion.Modify(model, "Title", "Type", "StartDate", "EndDate", "MinValue", "Money", "Status");
                     WriteLog($"修改了促销活动【{model.Title}】的信息");
@@ -94,11 +97,11 @@ namespace Sms.WebAdmin.Controllers
                     }
                     else
                     {
-                        return ShowResultMessage(new TipMessage() { Status = false, MsgText = "添加失败！", Url = Url.Action("Index") });
+                        return ShowResultMessage(new TipMessage() { Status = false, MsgText = "添加失败！"});
                     }
                 }
             }
-            return ShowResultMessage(new TipMessage() { Status = false, MsgText = "未知操作结果！", Url = Url.Action("Index") });
+            return ShowResultMessage(new TipMessage() { Status = false, MsgText = "未知操作结果！" });
         }
 
         /// <summary>

@@ -190,7 +190,6 @@ namespace Sms.WebAdmin.Controllers
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.View)]
         public ActionResult Log(int? type, string keyword = "")
         {
-            ViewBag.ddlType = new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.LogType)), "Value", "Key");
             var list = _repositoryFactory.ISysLog.Where(c => c.Id > 0);
             //搜索关键字过滤
             if (type != null && type != -1)

@@ -37,12 +37,14 @@
             <table class="table table-bordered table-striped with-check">
                 <thead>
                     <tr>
-                        <th style="width: 15%">会员卡号</th>
+                        <th style="width: 13%">会员卡号</th>
                         <th style="width: 15%">消费时间</th>
                         <th>消费金额</th>
-                        <th>备注</th>
+                        <th>折扣金额</th>
+                        <th>支付金额</th>
+                        <th style="width: 30%">备注</th>
                         <th>操作人</th>
-                        <th></th>
+                        @*<th></th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -52,30 +54,36 @@
                             foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="center" style="width: 20%;font-size:16px;font-weight:600">
+                                    <td class="center" style="width: 13%;font-size:16px;font-weight:600">
                                         @item.CardNo
                                     </td>
                                     <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
                                     <td class="center">
                                         @item.Value
                                     </td>
+                                    <td class="center">
+                                        @item.PromotionValue
+                                    </td>
+                                    <td class="center">
+                                        @item.PracticalValue
+                                    </td>
                                     <td>
-                                        @item.Remark
+                                        @Html.Raw(item.Remark)
                                     </td>
                                     <td class="center">
                                         @item.CreateUser
                                     </td>
-                                    <td class="center">
-                                        <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="HistoryDelete(this,@item.Id);"><i class="icon-trash icon-white"></i></a>
-                                    </td>
+                                    @*<td class="center">
+                                            <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="HistoryDelete(this,@item.Id);"><i class="icon-trash icon-white"></i></a>
+                                        </td>*@
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr style="">
-                                <td colspan="6">
-                                    <div class="list-none-data" >  -- 暂无记录 -- </div>
+                                <td colspan="7">
+                                    <div class="list-none-data">  -- 暂无记录 -- </div>
                                 </td>
                             </tr>
                         }
@@ -89,16 +97,16 @@
             <div class="center">
                 <div class="dataTables_paginate paging_bootstrap pagination">
                     @Html.Pager(Model, new PagerOptions
-               {
-                   PageIndexParameterName = "page",
-                   ContainerTagName = "ul",
-                   DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
-                   PagerItemTemplate = "<li>{0}</li>",
-                   CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
-                   PrevPageText = "上一页",
-                   NextPageText = "下一页",
-                   ShowFirstLast = false
-               })
+                    {
+                        PageIndexParameterName = "page",
+                        ContainerTagName = "ul",
+                        DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+                        PagerItemTemplate = "<li>{0}</li>",
+                        CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+                        PrevPageText = "上一页",
+                        NextPageText = "下一页",
+                        ShowFirstLast = false
+                    })
                 </div>
             </div>
         }

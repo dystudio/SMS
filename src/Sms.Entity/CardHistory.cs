@@ -21,5 +21,7 @@ namespace Sms.Entity
         public string Remark { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public string CreateUser { get; set; }
+        public decimal PromotionValue { get; set; }
+        public decimal PracticalValue { get; set; }
     }
 }

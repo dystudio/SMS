@@ -9,7 +9,6 @@
 /* Main */
 body {
 	overflow-x: hidden;
-    margin-top: -9px;
 }
 a:hover {
 	text-decoration: none;
@@ -17,7 +16,9 @@ a:hover {
 
 /* Header */
 #header {
-    height: 77px;
+    overflow:hidden;
+    clear:both;
+    height: 70px;
     position: relative;
     width: 100%;
     z-index: -9;
@@ -141,7 +142,7 @@ a:hover {
 
 #sidebar > ul {
 	list-style: none;
-	margin: 10px 0 0;
+	margin: 0;
 	padding: 0;
 	position: absolute;
 	width: 220px;
@@ -206,7 +207,7 @@ a:hover {
     margin-left: 220px;
     margin-right: 0;
     position: relative;
-    min-height: 650px;
+    /*min-height: 650px;*/
     width: auto;
 }
 

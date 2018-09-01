@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using Sms.WebAdmin.Filter;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Sms.WebAdmin
@@ -7,7 +8,7 @@ namespace Sms.WebAdmin
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new ExceptionLogAttribute());
         }
     }
 }
