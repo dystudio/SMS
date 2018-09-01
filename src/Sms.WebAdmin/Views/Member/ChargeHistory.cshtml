@@ -1,0 +1,130 @@
+﻿
+
+@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.CardHistory>
+@section head{
+
+    <link href="~/Content/datepicker.css" rel="stylesheet" />
+}
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
+    <a href="javascript:void(0);" class="current">充值记录</a>
+</div>
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon">
+                <a class="icon-list"></a>
+            </span>
+            <h5>充值记录</h5>
+        </div>
+        <div class="widget-content">
+            @using (Html.BeginForm("ChargeHistory", "Member", new { page = 1 }, FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "会员卡号", style = "margin:0px 10px" })
+                    @Html.TextBox("start", "", new { id = "StartDate", placeholder = "起始日期", style = "margin:0px 10px;width:150px" })
+                    -
+                    @Html.TextBox("end", "", new { id = "EndDate", placeholder = "结束日期", style = "margin:0px 10px;width:150px" })
+                    <input type="submit" class="btn" value="查询" onclick="" />
+                </p>
+            }
+        </div>
+        <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped with-check">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">会员卡号</th>
+                        <th style="width: 12%">充值时间</th>
+                        <th>充值金额</th>
+                        <th>类型</th>
+                        <th>备注</th>
+                        <th>操作人</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="center" style="width: 15%;font-size:16px;font-weight:600">
+                                        @item.CardNo
+                                    </td>
+                                    <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                                    <td class="center">
+                                        @item.Value
+                                    </td>
+                                    <td class="center">
+                                        @(item.Type == 1 ? "充值" : "充值赠送")
+                                    </td>
+                                    <td>
+                                        @item.Remark
+                                    </td>
+                                    <td class="center">
+                                        @item.CreateUser
+                                    </td>
+                                    <td class="center">
+                                        <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="HistoryDelete(this,@item.Id);"><i class="icon-trash icon-white"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr style="">
+                                <td colspan="7">
+                                    <div class="list-none-data">  -- 暂无记录 -- </div>
+                                </td>
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.Count >= Sms.WebAdmin.Common.ConstFiled.PageSize)
+        {
+            <div class="center">
+                <div class="dataTables_paginate paging_bootstrap pagination">
+                    @Html.Pager(Model, new PagerOptions
+               {
+                   PageIndexParameterName = "page",
+                   ContainerTagName = "ul",
+                   DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+                   PagerItemTemplate = "<li>{0}</li>",
+                   CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+                   PrevPageText = "上一页",
+                   NextPageText = "下一页",
+                   ShowFirstLast = false
+               })
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+@section foot{
+    <script src="~/Scripts/unicorn/jquery.ui.custom.js"></script>
+    <script src="~/Scripts/unicorn/bootstrap-datepicker.js"></script>
+    <script>
+        $(function () {
+            $("#StartDate,#EndDate").datepicker();
+        });
+
+        function HistoryDelete(obj,id) {
+            if (confirm('删除记录可能会导致数据不一致，确认要删除吗？请谨慎操作！')) {
+                AjaxFunction("post", "@Url.Action("HistoryDelete")", { "id": id }, function (data) {
+                    if(data.Status){$(obj).parents("tr").remove();}
+                    show_message(data.Status, data.MsgText, data.Url);
+                });
+            }
+        }
+    </script>
+}

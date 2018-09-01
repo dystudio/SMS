@@ -1,0 +1,168 @@
+﻿@model List<Sms.Entity.ViewModel.MenuNode>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/Content/Images/favicon.ico" />
+    <title>饮养吧会员管理系统</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/uniform.css" />
+    <link rel="stylesheet" href="~/Content/unicorn.main.css" />
+    <link rel="stylesheet" href="~/Content/unicorn.grey.css" class="skin-color" />
+    <style type="text/css">
+        tbody .title {
+            width: 23%;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header" style="color: #C64A48; font-size: 20px; line-height: 85px; padding-left: 15px;font-family:'Microsoft YaHei' ">
+        <img src="~/Content/Images/logo-bg.png" style="width: 8%;" />
+        <span>会员管理系统</span>
+    </div>
+
+    <div id="user-nav" class="navbar navbar-inverse">
+        <div id="linkweb" style="float: left; padding-right: 20px; line-height: 35px"> </div>
+        <ul class="nav btn-group" style="width: auto; margin: 0px;">
+            <li class="btn btn-inverse dropdown">
+                <a href="javascript:void(0);" data-toggle="dropdown" class="dropdown-toggle">
+                    <i class="icon icon-user"></i>
+                    <span class="text">hi，@(((Sms.Entity.ViewModel.AdminLoginModel)Sms.Common.SessionHelper.Get(Sms.WebAdmin.Common.ConstFiled.Admin_Session_Name)).UserName)</span> &nbsp <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="" title="" href="javascript:ShowDialog();">个人信息</a> </li>
+                    <li><a class="" title="" href="javascript:" onclick="document.getElementById('mainframe').src = '@Url.Action("ChangePassword")';">修改密码</a></li>
+                </ul>
+            </li>
+            <li class="btn btn-inverse"><a id="btnClearCache" href="javascript:"><i class="icon-trash"></i><span class="text">清除缓存</span></a></li>
+            <li class="btn btn-inverse"><a id="btnFrefresh" href="javascript:"><i class="icon-refresh"></i><span class="text">刷新页面</span></a></li>
+            <li class="btn btn-inverse"><a title="" href="@Url.Action("LoginOut", "Login")"><i class="icon icon-share-alt"></i><span class="text">安全退出</span></a></li>
+        </ul>
+    </div>
+    <div id="sidebar">
+        <ul>
+            <li><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
+            @if (Model != null)
+            {
+                foreach (var node in Model)
+                {
+            <li class="submenu open">
+                <a href="javascript:"><i class="icon icon-th-list"></i><span>@node.Title</span> <span class="label">@node.ChildNode.Count</span></a>
+                <ul>
+                    @foreach (var child in node.ChildNode)
+                            {
+                            <li><a href="javascript:" page="@child.Url" class="page-url" node="@(child.Id)">@child.Title</a></li>
+                            }
+                </ul>
+            </li>
+                }
+            }
+        </ul>
+    </div>
+    <div id="content">
+        <iframe id="mainframe" src="@Url.Action("Home", "Console")" style="width:100%;border:none;" name="mainframe"></iframe>
+
+    </div>
+    <div class="row-fluid">
+        <div id="footer" class="span12" style="vertical-align: inherit; line-height: 50px;">
+            Copyright © @DateTime.Now.Year  Power By <a href="http://wpa.qq.com/msgrd?v=3&uin=591310381&site=qq&menu=yes" target="_blank" title="联系作者">HOHO</a>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" onclick="CloseDialog();"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">个人信息</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover ">
+                            <tbody>
+                                <tr>
+                                    <td class="title">用户名：</td>
+                                    <td id="UserName"></td>
+                                </tr>
+                                <tr>
+                                    <td class="title">真实姓名：</td>
+                                    <td id="TrueName"></td>
+                                </tr>
+                                <tr>
+                                    <td class="title">手机号码：</td>
+                                    <td id="LinkPhone"></td>
+                                </tr>
+                                <tr>
+                                    <td class="title">角色：</td>
+                                    <td id="RoleList"></td>
+                                </tr>
+                                <tr>
+                                    <td class="title">创建时间：</td>
+                                    <td id="CreateTime"></td>
+                                </tr>
+                                <tr>
+                                    <td class="title">上次登录时间：</td>
+                                    <td id="LastLoginTime"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="CloseDialog();">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade " style="display: none" id="modalbackground"></div>
+</body>
+</html>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/unicorn/bootstrap.min.js"></script>
+<script src="~/Scripts/unicorn/unicorn.js"></script>
+<script src="~/Scripts/jquery.cookie.js"></script>
+<script type="text/javascript">
+    $(function () {
+        setInterval("linkweb.innerHTML=new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay());", 1000);
+        $("#content,#mainframe").height($(document).height() * 0.87);
+        $(".page-url").click(function () {
+            $.cookie('thenode', $(this).attr("node"));//当前操作的模块
+            document.getElementById("mainframe").src = $(this).attr("page");
+        });
+        $("#btnFrefresh").click(function () {
+            document.getElementById("mainframe").contentWindow.location.reload(true);
+        });
+        $("#btnClearCache").click(function () {
+            $.post("@Url.Action("ClearCache")", {}, function (data) {
+                alert(data.MsgText);
+            });
+        });
+        $.post("@Url.Action("GetLoginUserDetail")", {}, function (data) {
+            if (data.Status) {
+                $("#UserName").text(data.Data.UserName);
+                $("#TrueName").text(data.Data.TrueName);
+                $("#LinkPhone").text(data.Data.LinkPhone);
+                $("#RoleList").text(data.Data.RoleList);
+                $("#CreateTime").text(data.Data.CreateTime);
+                $("#LastLoginTime").text(data.Data.LastLoginTime);
+            } else { $("#UserName").text(data.MsgText); }
+        }, "json");
+    })
+
+    function ShowDialog() {
+        $("#modalbackground,#myModal").addClass("in").show();
+    }
+
+    function CloseDialog() {
+        $("#modalbackground,#myModal").removeClass("in").hide();
+    }
+</script>

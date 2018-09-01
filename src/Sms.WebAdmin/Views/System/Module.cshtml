@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Sms.Entity.SystemModule>
+
+@section head{
+    <link href="~/Content/tree.css" rel="stylesheet" />
+}
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="javascript:void(0);" class="current">模块管理</a>
+</div>
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <h2 style="line-height: 29px; margin: 3px 0px; padding-left: 30px">
+                <a class="btn btn-primary" href="@Url.Action("ModuleEdit", "System")" ><i class="icon-plus icon-white"></i>创建新模块</a>
+                <button class="btn btn-info" id="btnToggle">全部收起</button>
+            </h2>
+        </div>
+
+        <div class="widget-content nopadding">
+            <div class="tree well">
+                <ul>
+
+                    @{
+                        var topList = Model.Where(m => m.ParentId == 0).OrderBy(m => m.Sort);
+                        foreach (var top in topList)
+                        {
+                        <li>
+                            @{
+                            var childList = Model.Where(m => m.ParentId == top.Id).OrderBy(m => m.Sort);
+                        
+                                <span><i class="@(childList.Count() > 0 ? "icon-minus-sign" : "icon-flag")"></i>@top.Name
+                                </span>
+                                
+                            if (!top.IsDisplay)
+                            {
+                                <span class="badge">已隐藏</span>
+                            }
+                                    
+                                <a href="@Url.Action("ModuleEdit", new { id = top.Id })"  title="编辑" ><i class="icon-edit"></i></a>
+                                <a href="javascript:" class="delete" title="删除" module="@top.Id"><i class="icon-trash"></i></a>
+                                <ul>
+                                    @foreach (var child in childList)
+                                    {
+                                        <li>
+                                            <span><i class="icon-flag"></i><a href="javascript:">@child.Name</a>
+                                                @{if (!child.IsDisplay)
+                                                  {
+                                                    <span class="badge">已隐藏</span>
+                                                  }
+                                                }
+                                                <a href="@Url.Action("ModuleEdit", new { id = child.Id })" class="tip-bottom" title="编辑" ><i class="icon-edit"></i></a>
+                                                <a href="javascript:" class="tip-bottom delete" title="删除" module="@child.Id"><i class="icon-trash"></i></a>
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            
+                            }
+                        </li>
+                        }
+                    }
+
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $(".delete").bind("click", function () {
+                if (confirm('删除该模块会级联删除与其有关的数据，确认要删除吗？ \n\n请谨慎操作！')) {
+                    OnSubmiting();
+                    var obj = $(this);
+                    $.post("@Url.Action("ModuleDelete")", { "module": obj.attr("module") }, function (data) {
+                        AjaxCompelement();
+                        if (data.Status) {
+                            obj.parent().parent().remove();
+                        }
+                        else {
+                            show_message(false, data.MsgText, data.Url);
+                        }
+                    }, "json");
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,160 @@
+﻿@model Sms.Entity.MemberCard
+@using Sms.Common
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
+    <a href="@Url.Action("Index", "Member")" title="用户列表" class="tip-bottom">会员卡信息</a>
+    <a href="javascript:void(0);" class="current">编辑会员卡信息</a>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                @using (Ajax.BeginForm("Edit", "Member", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "EditMember" }))
+                {
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-pencil"></i>
+                        </span>
+                        <h5>编辑会员卡信息</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+
+                        @{
+                            if (Model != null)
+                            {
+                                <div class="control-group">
+                                    <label class="control-label">会员卡号</label>
+                                    <div class="controls">
+                                        <label style="padding-top: 5px;font-size:16px;font-weight:600">@Model.CardNo</label>
+                                    </div>
+                                </div>
+                                @Html.HiddenFor(m => m.CardNo)
+                                @Html.HiddenFor(m => m.Password)
+
+                                <input type="hidden" name="mode" value="edit" />
+                            }
+                            else
+                            {
+                                <div class="control-group">
+                                    <label class="control-label">会员卡号</label>
+                                    <div class="controls">
+                                        @Html.TextBoxFor(model => model.CardNo)
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">消费密码</label>
+                                    <div class="controls">
+                                        @Html.PasswordFor(model => model.Password)
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="control-group">
+                            <label class="control-label">真实姓名</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Name)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">手机号</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Mobile)
+                                @Html.Hidden("oldmobile", Model != null ? Model.Mobile : "", new { id = "OldMobile" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">性别</label>
+                            <div class="controls">
+                                @{
+                                    Dictionary<string, string> dictSex = new Dictionary<string, string>();
+                                    dictSex.Add("未知", "未知");
+                                    dictSex.Add("男", "男");
+                                    dictSex.Add("女", "女");
+                                }
+                                @Html.DropDownListFor(model => model.Sex, new SelectList(dictSex, "Value", "Key", true), "", new { @style = "width:100px" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">状态</label>
+                            <div class="controls">
+                                @{
+                                    Dictionary<string, int> dictStatus = EnumHepler.GetEnumData(typeof(EnumHepler.MemberCardStatus));
+                                }
+                                @Html.DropDownListFor(model => model.Status, new SelectList(dictStatus, "Value", "Key", true), "", new { @style = "width:100px" })
+                            </div>
+                        </div>
+                        @{
+                            if (Model != null)
+                            {
+                                <div class="control-group">
+                                    <label class="control-label">账户余额</label>
+                                    <div class="controls">
+                                        <label style="padding-top: 5px;">@Model.Banlance</label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">累计充值</label>
+                                    <div class="controls">
+                                        <label style="padding-top: 5px;">@Model.TotalMoney</label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">创建时间</label>
+                                    <div class="controls">
+                                        <label style="padding-top: 5px;">@Model.CreateTime</label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">创建人</label>
+                                    <div class="controls">
+                                        <label style="padding-top: 5px;">@Model.CreateUser</label>
+                                    </div>
+                                </div>
+                            }
+                        }
+                            <div class="form-actions">
+                                <input type="submit" value="保存" class="btn btn-primary" />
+                                <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
+                            </div>
+                        </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @section foot{
+            <script>
+                $(function () {
+                    var rules = {
+                        CardNo: {
+                            required: true,
+                            remote: {
+                                url: "@Url.Action("CheckCardNo")",
+                                type: "post",
+                                data: {
+                                    'card': $('#CardNo').val()
+                                }
+                            }
+                        },
+                        Mobile: {
+                            required: true,
+                            mobile: true,
+                            remote: {
+                                url: "@Url.Action("CheckMobile")",
+                                type: "post",
+                                data: {
+                                    'mobile': $('#Mobile').val(), 'oldmobile': $('#OldMobile').val()
+                                }
+                            }
+                        },
+                        Password: { required: true }, Status: { required: true }
+                    };
+                    var message = { CardNo: { required: "*必填字段", remote: "*此卡号已被注册" }, Mobile: { required: "*必填字段", remote: "*此手机号已被绑定" } };
+                    basic_validate("EditMember", rules, message);
+                });
+            </script>
+        }

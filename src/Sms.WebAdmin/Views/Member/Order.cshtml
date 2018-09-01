@@ -1,0 +1,177 @@
+﻿
+@model Sms.Entity.CardHistory
+
+@section head{
+    <style type="text/css">
+        .card_box {
+            display: none;
+            width: 300px;
+            height: 180px;
+            margin-top: 20px;
+            background-image: url('/Content/Images/pic1.png');
+            background-size: cover;
+            color: #c00;
+        }
+
+            .card_box .number {
+                font-size: 18px;
+                color: #c51d92;
+                line-height: 30px;
+                text-align: right;
+                padding: 10px 10px 0 0;
+                font-family: inherit;
+            }
+
+            .card_box .money {
+                text-align: center;
+                line-height: 40px;
+                font-size: 16px;
+                padding: 20px 0 0 0;
+            }
+
+                .card_box .money em:first-child {
+                    font-size: 40px;
+                }
+
+            .card_box .info {
+                text-align: left;
+                display: block;
+                font-size: 18px;
+                padding: 33px 0 0 15px;
+                line-height: 20px;
+                color: #ff4701;
+                font-family: cursive;
+            }
+
+                .card_box .info span {
+                    padding: 0px 0px 0px 10px;
+                    color: #4791c5;
+                    font-size: 12px;
+                }
+    </style>
+}
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home","Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
+    <a href="javascript:void(0);" class="current">会员卡消费</a>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-pencil"></i>
+                    </span>
+                    <h5>会员卡消费</h5>
+                </div>
+                <form class="form-horizontal">
+                    <div class="widget-content nopadding">
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <input type="text" id="txtCardKey" tabindex="1" placeholder="会员卡号或手机号" />
+                                &nbsp;&nbsp;
+                                <input type="button" value="查询" class="btn btn-primary" tabindex="2" id="btnSearch" />
+                                <input type="button" value="清空" class="btn" id="btnClear" onclick="ClearConsume(true);" />
+                                @*以下是查询出来的会员卡信息*@
+                                <br />
+                                <span class="card_box" id="card_box">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                @using (Ajax.BeginForm("Order", "Member", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement();" }, new { @class = "form-horizontal", id = "ConsumeCard" }))
+                {
+                    <div class="widget-content nopadding" id="charge_box" style="display:none">
+                        @Html.HiddenFor(model => model.CardNo)
+                        <div class="control-group">
+                            <label class="control-label">消费金额</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Value, new { style = "width:100px" }) 元
+                                &nbsp;
+                                <select id="default_price" style="width:110px">
+                                    <option selected="selected">选择价格</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="12">12</option>
+                                    <option value="15">15</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">消费说明</label>
+                            <div class="controls">
+                                @Html.TextAreaFor(model => model.Remark)
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="提交" class="btn btn-info" onclick="if ($('#charge_box .control-group').first().hasClass('success')) { return confirm('确认提交消费信息？') } else { return true; }" />
+                            <input type="button" value="清空" class="btn" onclick="resetForm();" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script>
+        $(function () {
+            $("#txtCardKey").focus();
+            $('#txtCardKey').bind('keypress', function (event) {
+                if (event.keyCode == "13") {
+                    event.preventDefault();
+                    //回车执行查询
+                    $('#btnSearch').click();
+                }
+            });
+            $("#btnSearch").bind("click", function () {
+                var key = $("#txtCardKey").val();
+                if (key.length > 0) {
+                    AjaxFunction("post", "@Url.Action("SearchMemberCard")", { "key": key }, function (data) {
+                        //show_message(data.Status, data.MsgText, data.Url);
+                        $("#CardNo").val(data.Data.CardNo);
+                        var money = data.Data.Banlance.split('.');
+                        $("#card_box").html("<p class=\"number\">NO.<span>" + data.Data.CardNo + "</span></p> <div class=\"money\">￥<em>" + money[0] + "</em><em>." + money[1] + "</em></div> <label class=\"info\">" + data.Data.Name + "<span>" + data.Data.Mobile + "</span></label> ").css("display", "inline-block");
+                        $("#charge_box").show(300);
+                        $("#Value").focus();
+                        var rules = { Value: { required: true, number: true, min: 0.01, max: 1000 }, Remark: { maxlength: 100 } };
+                        var message = { Value: { required: "没钱，我不干~", number: "非法RMB啊，我不收~", min: "没钱，我不干~", max: "别急，钱太多我数不过来~" } }
+                        basic_validate("ConsumeCard", rules, message);
+                    }, function (data) {
+                        ClearConsume();
+                    });
+                }
+                else { $("#txtCardKey").focus(); }
+            });
+
+            $("#default_price").change(function () {
+                if (parseInt(this.value) > 0) {
+                    $("#Value").val(this.value).focus();
+                }
+                else { $("#Value").val("").parents(".control-group").removeClass('success'); }
+            }).select2();
+        });
+
+        function ClearConsume(remove) {
+            $("#card_box").hide().html("");
+            $("#charge_box").hide(150);
+            resetForm();
+            $("#txtCardKey").focus();
+            if (remove === true) $("#txtCardKey").val("");
+        }
+
+        function resetForm() {
+            $("#ConsumeCard :input").not(":button, :submit, :reset").val("").removeAttr("checked").remove("selected");
+            $('#charge_box .control-group').removeClass('success');
+        }
+    </script>
+}

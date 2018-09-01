@@ -1,0 +1,109 @@
+﻿@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.SystemUser>
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home","Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="javascript:void(0);" class="current">员工管理</a>
+</div>
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon">
+                <a class="icon-list"></a>
+            </span>
+            <h5>员工列表</h5>
+            <h5><a href="@Url.Action("Edit")" class="">添加</a></h5>
+        </div>
+        <div class="widget-content">
+            @using (Html.BeginForm("Index", "Users", new { page = 1 }, FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "用户名、真实姓名", style = "margin:0px 10px" })
+                    <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' ) { return false; }" />
+                </p>
+            }
+        </div>
+        <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped with-check">
+                <thead>
+                    <tr>
+                        <th style="width: 35%">用户名</th>
+                        <th>真实姓名</th>
+                        <th>联系电话</th>
+                        <th>创建时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="center" style="width: 35%">@item.UserName</td>
+                            <td class="center">@item.TrueName</td>
+                            <td class="center">@item.LinkPhone</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                            <td class="center">
+                                @Html.Raw(item.Status == (int)EnumHepler.UserStatus.Available ? "<i class=\"icon-ok tip-bottom\" title=\"有效\"></i>" : (item.Status == (int)EnumHepler.UserStatus.Lock ? "<i class=\"icon-remove tip-bottom\" title=\"已锁定\"></i>" : ""))
+                            </td>
+                            <td class="center">
+                                <a href="@Url.Action("Edit",new{ id=item.Id})" class="btn btn-mini tip-bottom" data-original-title="编辑"><i class="icon-pencil"></i></a>
+                                @if (item.Status == (int)EnumHepler.UserStatus.Available)
+                                {
+                                    <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="禁用" onclick="SetStatus(@item.Id,@((int)EnumHepler.UserStatus.Lock));"><i class="icon-lock icon-white"></i></a>
+                                }
+                                else if (item.Status == (int)EnumHepler.UserStatus.Lock)
+                                {
+                                    <a href="javascript:" class="btn btn-mini btn-success tip-bottom" title="启用" onclick="SetStatus(@item.Id,@((int)EnumHepler.UserStatus.Available));"><i class="icon-check icon-white"></i></a>
+                                }
+                                <a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置登录密码" onclick="SetPassword(@item.Id,1)"><i class="icon-cog"></i></a>
+                                <a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置操作密码" onclick="SetPassword(@item.Id,2)"><i class="icon-wrench"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="center">
+            <div class="dataTables_paginate paging_bootstrap pagination">
+                @Html.Pager(Model, new PagerOptions
+           {
+               PageIndexParameterName = "page",
+               ContainerTagName = "ul",
+               DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+               PagerItemTemplate = "<li>{0}</li>",
+               CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+               PrevPageText = "上一页",
+               NextPageText = "下一页",
+               ShowFirstLast = false
+           })
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script type="text/javascript">
+        //更改状态
+        function SetStatus(id, status) {
+            if (confirm('确认要执行操作吗？')) {
+                OnSubmiting();
+                $.post("@Url.Action("UpdateStatus")", { "id": id, "status": status }, function (data) {
+                    AjaxCompelement();
+                    show_message(data.Status, data.MsgText, data.Url);
+                }, "json");
+            }
+        }
+        //重置密码
+        function SetPassword(id, type) {
+            if (confirm('确认要重置为默认密码吗？')) {
+                AjaxFunction("post", "@Url.Action("UpdatePassword")", { "id": id, "type": type }, function (data) {
+                    show_message(data.Status, data.MsgText, data.Url);
+                });
+            }
+        }
+    </script>
+}

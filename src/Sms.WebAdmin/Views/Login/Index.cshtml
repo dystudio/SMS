@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "管理员登录";
+    Layout = "";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>管理员登录</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/unicorn.login.css" />
+    <link rel="shortcut icon" href="/Content/Images/favicon.png" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript">
+        var login_status = false;
+    </script>
+</head>
+<body>
+    <div id="logo">
+        <img src="~/Content/Images/logo-bg.png" />
+    </div>
+    <div id="loginbox" style="height: 250px;">
+        @using (Ajax.BeginForm("Index", "Login", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "$('#btnLogin').val('正在登录...').attr({'disabled':'disabled'});", OnComplete = "if(login_status){$('#btnLogin').val('登录成功！跳转中...');}else{$('#btnLogin').val('登  录').removeAttr('disabled');}" }, new { @class = "form-vertical", id = "loginform" }))
+        {
+            <p>
+                <div class="alert alert-info" id="message_box">
+                    <strong>管理员登录</strong>
+                </div>
+            </p>
+            <div class="control-group">
+                <div class="controls">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span>
+                        <input type="text" placeholder="请输入用户名" name="username" id="username" tabindex="1" />
+                    </div>
+                </div>
+            </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-lock"></i></span>
+                            <input type="password" placeholder="请输入密码" name="password" id="password" tabindex="2" />
+                        </div>
+                    </div>
+                </div>
+                <p>
+                    <div class="alert alert-error" style="display:none">
+                        <strong></strong>
+                    </div>
+                </p>
+                <div class="form-actions">
+                    <input type="submit" class="btn btn-info" onclick="$('#message_box').removeClass('alert-error').addClass('alert-info').find('strong').text('管理员登录');" id="btnLogin" value="登  录" style="width: 69%;font-family:'Microsoft YaHei';" />
+                </div>
+        }
+    </div>
+
+</body>
+</html>
+<script src="~/Scripts/unicorn/jquery.min.js"></script>
+<script src="~/Scripts/unicorn/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/unicorn/unicorn.login.js"></script>
+<script src="~/Scripts/unicorn/jquery.validate.js"></script>
+<script type="text/javascript">
+    $(function () {
+        if (window.parent.length > 0) {
+            window.parent.location = '@Url.Action("Index")';
+        }
+        $("#username").focus();
+        $("#loginform").validate({
+            rules: { username: { required: true }, password: { required: true } },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight: function (element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            }
+        });
+    })
+    function show_message(text) {
+        $("#message_box").removeClass("alert-info").addClass("alert-error").find("strong").text(text);
+    }
+</script>

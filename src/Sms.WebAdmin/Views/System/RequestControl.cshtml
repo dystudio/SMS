@@ -1,0 +1,102 @@
+﻿@model Sms.Entity.ViewModel.IpConfig
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="javascript:void(0);" class="current">IP白名单</a>
+</div>
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon">
+                <a class="icon-list"></a>
+            </span>
+            <h5>IP白名单</h5>
+        </div>
+        <div class="widget-content nopadding">
+            <form class="form-horizontal" id="mainform" method="post">
+                <div class="control-group">
+                    <label class="control-label">IP限制</label>
+                    <div class="controls">
+                        <label>@Html.CheckBox("ipstatus", Model != null && Model.Status == "true" ? true : false, new { id = "ckb_ip_control" }) 开启</label>
+                    </div>
+                </div>
+                <div id="main_router">
+                    <div class="control-group">
+                        <label class="control-label"></label>
+                        <div class="controls">
+                            <input type="button" value="新增IP地址" class="btn btn-info" onclick="AddControl();" />
+                        </div>
+                    </div>
+                    <div id="router_list">
+                        @{ if (Model != null && Model.AddressList.Count > 0)
+                            {
+                                foreach (var item in Model.AddressList)
+                                {
+                                    <div class="control-group">
+                                        <label class="control-label">IP地址</label>
+                                        <div class="controls">
+                                            <input type="text" value="@item" name="address" maxlength="15" />
+                                            &nbsp;
+                                            <input type="button" value="移除" class="btn btn-danger" onclick="$(this).parent().parent().remove();" />
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="form-actions" style="padding-left: 13%">
+                    <input type="button" value="保存" class="btn btn-primary" id="btnSave" />
+                </div>
+            </form>
+        </div>
+
+        <div style="display: none" id="demo_control">
+            <div class="control-group">
+                <label class="control-label">IP地址</label>
+                <div class="controls">
+                    <input type="text" value="" name="address" maxlength="15" />
+                    &nbsp;
+                    <input type="button" value="移除" class="btn btn-danger" onclick="$(this).parent().parent().remove();" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section foot{
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#btnSave").bind("click", function () {
+                $("#uniform-ckb_ip_control").next().remove();
+                var validate = true;
+                $.each($("#router_list .control-group"), function (index, item) {
+                    var address = $(item).find("input[name='address']");
+                    if (address.val() == "") {
+                        address.focus();
+                        validate &= false;
+                        return;
+                    }
+                });
+                if (validate) {
+                    $("#mainform").ajaxSubmit({
+                        beforeSubmit: function () {
+                            OnSubmiting();
+                        },
+                        success: function (obj) {
+                            AjaxCompelement();
+                            show_message(obj.Status, obj.MsgText, obj.Url);
+                        }
+                    });
+                }
+            });
+        });
+        function AddControl() {
+            $("#router_list").append($("#demo_control").html());
+        }
+    </script>
+}
+

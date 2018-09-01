@@ -1,0 +1,76 @@
+﻿
+@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.SysLog>
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home","Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="javascript:void(0);" class="current">系统日志</a>
+</div>
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <span class="icon">
+                <a class="icon-list"></a>
+            </span>
+            <h5>系统日志</h5>
+        </div>
+        <div class="widget-content">
+            @using (Html.BeginForm("Log", "System", new { page = 1 }, FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "关键字", style = "margin:0px 10px" })
+                    @Html.DropDownList("type", ViewBag.ddlType as SelectList, null, new { @id = "type", style = "width:100px" })
+                    <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' && $('#type').val() == '') { return false; }" />
+                </p>
+            }
+        </div>
+        <div class="widget-content nopadding">
+            <table class="table table-bordered table-striped with-check">
+                <thead>
+                    <tr>
+                        <th style="width:15%">时间</th>
+                        <th style="width:10%">类型</th>
+                        <th>内容</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="center" style="width:15%">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                            <td class="center">@(EnumHepler.GetEnumDescription((EnumHepler.LogType)item.Type))</td>
+                            <td>@item.Remark</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="center">
+            <div class="dataTables_paginate paging_bootstrap pagination">
+                @Html.Pager(Model, new PagerOptions
+           {
+               PageIndexParameterName = "page",
+               ContainerTagName = "ul",
+               DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+               PagerItemTemplate = "<li>{0}</li>",
+               CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+               PrevPageText = "上一页",
+               NextPageText = "下一页",
+               ShowFirstLast = false
+           })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("select").select2();
+        });
+    </script>
+}

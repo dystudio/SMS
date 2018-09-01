@@ -1,0 +1,123 @@
+﻿@model Sms.Entity.SystemUser
+@using Sms.Common
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="@Url.Action("Index", "Users")" title="用户列表" class="tip-bottom">员工管理</a>
+    <a href="javascript:void(0);" class="current">编辑员工信息</a>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                @using (Ajax.BeginForm("Edit", "Users", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "EditUsers" }))
+                {
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-pencil"></i>
+                        </span>
+                        <h5>编辑员工信息</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+                        <div class="control-group">
+                            <label class="control-label">用户名</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.UserName)
+                                @Html.Hidden("oldusername", Model != null ? Model.UserName : "", new { id = "OldUserName" })
+                            </div>
+                        </div>
+                        @{
+                            if (Model != null)
+                            {
+                                @Html.HiddenFor(m => m.Password)
+                                @Html.HiddenFor(model => model.OpratePwd)
+                            }
+                            else
+                            {
+                                <div class="control-group">
+                                    <label class="control-label">登录密码</label>
+                                    <div class="controls">
+                                        @Html.PasswordFor(model => model.Password)
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">操作密码</label>
+                                    <div class="controls">
+                                        @Html.PasswordFor(model => model.OpratePwd)
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="control-group">
+                            <label class="control-label">真实姓名</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.TrueName)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">联系电话</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.LinkPhone)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">状态</label>
+                            <div class="controls">
+                                @{
+                                    Dictionary<string, int> dictStatus = EnumHepler.GetEnumData(typeof(EnumHepler.UserStatus));
+                                }
+                                @Html.DropDownListFor(model => model.Status, new SelectList(dictStatus, "Value", "Key", true), "", new { @style = "width:100px" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">拥有角色</label>
+                            <div class="controls">
+                                @*<select multiple="multiple" id="RoleList" style="width: 350px" name="rightlist">
+                                    </select>*@
+                                @Html.DropDownList("rolelist", ViewBag.ddlRole as SelectList, null, new { @style = "width:350px", multiple = "multiple", id = "RoleList" })
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="保存" class="btn btn-primary" />
+                            <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
+                        </div>
+                    </div>
+
+                                    }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script>
+        $(function () {
+            var rules = {
+                UserName: {
+                    required: true,
+                    remote: {
+                        url: "@Url.Action("CheckUserName")",
+                        type: "post", dataType: "json",
+                        data: {
+                            'userName': $('#userName').val(), 'oldUserName': $('#OldUserName').val()
+                        }
+                    }
+                },
+                Password: { required: true }, TrueName: { required: true }, Status: { required: true }, OpratePwd: { required: true }, LinkPhone: { required: true }
+            };
+            var message = { UserName: { required: "*必填字段", remote: "*此用户名已被注册" } };
+            basic_validate("EditUsers", rules, message);
+            var rightList = '@(Model != null ? Model.RoleList : "")';
+            if (rightList != '') {
+                var arry = rightList.split(',');
+                $.each($("#RoleList option"), function (index, obj) {
+                    if (arry.indexOf(obj.value) > -1) {
+                        obj.selected = 'selected';
+                    }
+                });
+            }
+            $("#RoleList").select2();
+        });
+    </script>
+}

@@ -1,0 +1,103 @@
+﻿@*@using System.Web.Optimization;*@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/Content/Images/favicon.png" />
+    <title></title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Content/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="~/Content/uniform.css" />
+    <link rel="stylesheet" href="~/Content/unicorn.main.css" />
+    <link rel="stylesheet" href="~/Content/unicorn.grey.css" class="skin-color" />
+    <link rel="stylesheet" href="~/Content/select2.css" />
+    <style type="text/css">
+        .alert {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            z-index: 100000;
+            margin-left: -4%;
+            margin-top: -17%;
+        }
+
+        #alertbox {
+            position: fixed;
+            top: 20%;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            text-align: center;
+            z-index: 999999;
+            display: none;
+        }
+
+        .alert-item {
+            padding: 8px 20px;
+            margin: 0 38%;
+            border-radius: 5px;
+            text-align: center;
+            font-family: "Microsoft YaHei";
+            display: none;
+        }
+
+        #alertbox .error {
+            color: #b94a48;
+            background-color: #f2dede;
+            border-color: #eed3d7;
+        }
+
+        #alertbox .success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+
+        .list-none-data {
+            padding: 8px 35px 8px 14px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            border: 1px solid #fbeed5;
+            border-radius: 4px;
+            color: #3a87ad;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+            font-size: 12px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+    </style>
+    @RenderSection("head", required: false)
+    @*@Scripts.Render("~/bundles/modernizr")*@
+
+</head>
+<body style="background: none; margin-top: 0px">
+    <img id="loading" src="~/Content/loading.gif" style="z-index: 999999; background: none; border: none; margin-top: -7%; display: none" class="alert" />
+    <div id="alertbox">
+        <div class="alert-item error" id="alerterror">
+            <strong class="icon-remove"></strong><span style="margin-left: 15px">The failed.</span>
+        </div>
+        <div class="alert-item success" id="alertsuccess">
+            <strong class="icon-ok"></strong><span style="margin-left: 15px">The successed.</span>
+        </div>
+    </div>
+
+    @RenderBody()
+
+    <div class="modal-backdrop fade " style="display: none" id="modalbackground"></div>
+</body>
+</html>
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+<script src="~/Scripts/unicorn/jquery.min.js"></script>
+<script src="~/Scripts/unicorn/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/unicorn/bootstrap.min.js"></script>
+<script src="~/Scripts/unicorn/jquery.validate.js"></script>
+<script src="~/Scripts/unicorn/jquery.uniform.js"></script>
+<script src="~/Scripts/unicorn/select2.min.js"></script>
+<script src="~/Scripts/unicorn/unicorn.js"></script>
+<script src="~/Scripts/commom.js"></script>
+@RenderSection("foot", required: false)
+
+

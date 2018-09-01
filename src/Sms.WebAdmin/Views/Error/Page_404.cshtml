@@ -1,0 +1,32 @@
+﻿
+
+
+@*<div class="alert alert-error alert-block">
+    <h4 class="alert-heading">Error 404!</h4>
+    ooops!! - Page Not Found
+</div>*@
+
+
+    <div class="pageError">
+        <p>
+            <img src="~/Content/Images/404.png" /></p>
+            <ul>
+                <li>对不起，您要访问的页面暂时没有找到！</li>
+                <li>系统将<strong id="time">5</strong>后自动跳转到上一页</li>
+                <li class="mt10">您也可以：<a href="@Url.Action("Home","Console")" class="i">返回首页</a><a href="@Url.Action("Logout", "Login")" class="c">重新登录</a></li>
+            </ul>
+        </div>
+        @*</div>*@
+
+<script type="text/javascript">   
+    var t =  document.getElementById("time").innerHTML;
+    setInterval("testTime()",1000);   //启动1秒定时   
+    function testTime() {
+        if (t == 0) {
+            history.go(-1);//location = "@Url.Action("Index")";
+        } else {
+            t--;   //   计数器递减  
+            document.getElementById("time").innerHTML = t//   显示倒计时   
+        }
+    }
+</script>

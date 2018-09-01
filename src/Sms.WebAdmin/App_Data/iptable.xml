@@ -1,0 +1,6 @@
+﻿<root>
+  <IpControl>true</IpControl>
+  <Router>
+    <Address>127.0.0.1</Address>
+  </Router>
+</root>

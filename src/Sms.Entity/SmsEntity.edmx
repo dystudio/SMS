@@ -1,0 +1,507 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SmsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CardHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CardNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="Value" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MemberCard">
+          <Key>
+            <PropertyRef Name="CardNo" />
+          </Key>
+          <Property Name="CardNo" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Mobile" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="10" />
+          <Property Name="Sex" Type="nvarchar" MaxLength="5" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Banlance" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalMoney" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPresent" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Promotion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="MinValue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Money" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="int" />
+        </EntityType>
+        <EntityType Name="SysLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="int" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="SystemModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ParentId" Type="int" Nullable="false" />
+          <Property Name="Url" Type="nvarchar" MaxLength="500" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsDisplay" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemModuleRight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ModuleId" Type="int" Nullable="false" />
+          <Property Name="RightId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemRoleRight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="RightId" Type="int" Nullable="false" />
+          <Property Name="ModuleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OpratePwd" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TrueName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LinkPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="CreateUser" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoleList" Type="nvarchar" MaxLength="100" />
+          <Property Name="LastLoginTime" Type="datetime" />
+          <Property Name="CurrentLoginTime" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_SystemModuleRight_SystemModule">
+          <End Role="SystemModule" Type="Self.SystemModule" Multiplicity="1" />
+          <End Role="SystemModuleRight" Type="Self.SystemModuleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemModuleRight">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SystemRoleRight_SystemModule">
+          <End Role="SystemModule" Type="Self.SystemModule" Multiplicity="1" />
+          <End Role="SystemRoleRight" Type="Self.SystemRoleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemRoleRight">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SystemRoleRight_SystemRole">
+          <End Role="SystemRole" Type="Self.SystemRole" Multiplicity="1" />
+          <End Role="SystemRoleRight" Type="Self.SystemRoleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemRole">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemRoleRight">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SmsModelStoreContainer">
+          <EntitySet Name="CardHistory" EntityType="Self.CardHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MemberCard" EntityType="Self.MemberCard" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Promotion" EntityType="Self.Promotion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SysLog" EntityType="Self.SysLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemModule" EntityType="Self.SystemModule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemModuleRight" EntityType="Self.SystemModuleRight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemRole" EntityType="Self.SystemRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemRoleRight" EntityType="Self.SystemRoleRight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemUser" EntityType="Self.SystemUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_SystemModuleRight_SystemModule" Association="Self.FK_SystemModuleRight_SystemModule">
+            <End Role="SystemModule" EntitySet="SystemModule" />
+            <End Role="SystemModuleRight" EntitySet="SystemModuleRight" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SystemRoleRight_SystemModule" Association="Self.FK_SystemRoleRight_SystemModule">
+            <End Role="SystemModule" EntitySet="SystemModule" />
+            <End Role="SystemRoleRight" EntitySet="SystemRoleRight" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SystemRoleRight_SystemRole" Association="Self.FK_SystemRoleRight_SystemRole">
+            <End Role="SystemRole" EntitySet="SystemRole" />
+            <End Role="SystemRoleRight" EntitySet="SystemRoleRight" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SmsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CardHistory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CardNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="Value" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MemberCard">
+          <Key>
+            <PropertyRef Name="CardNo" />
+          </Key>
+          <Property Name="CardNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Sex" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Banlance" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalMoney" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalPresent" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="Promotion">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="MinValue" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Money" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SysLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" />
+          <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="SystemModule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ParentId" Type="Int32" Nullable="false" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDisplay" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="SystemModuleRight" Relationship="Self.FK_SystemModuleRight_SystemModule" FromRole="SystemModule" ToRole="SystemModuleRight" />
+          <NavigationProperty Name="SystemRoleRight" Relationship="Self.FK_SystemRoleRight_SystemModule" FromRole="SystemModule" ToRole="SystemRoleRight" />
+        </EntityType>
+        <EntityType Name="SystemModuleRight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModuleId" Type="Int32" Nullable="false" />
+          <Property Name="RightId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SystemModule" Relationship="Self.FK_SystemModuleRight_SystemModule" FromRole="SystemModuleRight" ToRole="SystemModule" />
+        </EntityType>
+        <EntityType Name="SystemRole">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="Remark" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SystemRoleRight" Relationship="Self.FK_SystemRoleRight_SystemRole" FromRole="SystemRole" ToRole="SystemRoleRight" />
+        </EntityType>
+        <EntityType Name="SystemRoleRight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="RightId" Type="Int32" Nullable="false" />
+          <Property Name="ModuleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SystemModule" Relationship="Self.FK_SystemRoleRight_SystemModule" FromRole="SystemRoleRight" ToRole="SystemModule" />
+          <NavigationProperty Name="SystemRole" Relationship="Self.FK_SystemRoleRight_SystemRole" FromRole="SystemRoleRight" ToRole="SystemRole" />
+        </EntityType>
+        <EntityType Name="SystemUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OpratePwd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TrueName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LinkPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleList" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LastLoginTime" Type="DateTime" Precision="3" />
+          <Property Name="CurrentLoginTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK_SystemModuleRight_SystemModule">
+          <End Role="SystemModule" Type="Self.SystemModule" Multiplicity="1" />
+          <End Role="SystemModuleRight" Type="Self.SystemModuleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemModuleRight">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SystemRoleRight_SystemModule">
+          <End Role="SystemModule" Type="Self.SystemModule" Multiplicity="1" />
+          <End Role="SystemRoleRight" Type="Self.SystemRoleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemModule">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemRoleRight">
+              <PropertyRef Name="ModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SystemRoleRight_SystemRole">
+          <End Role="SystemRole" Type="Self.SystemRole" Multiplicity="1" />
+          <End Role="SystemRoleRight" Type="Self.SystemRoleRight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemRole">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SystemRoleRight">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SmsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CardHistory" EntityType="Self.CardHistory" />
+          <EntitySet Name="MemberCard" EntityType="Self.MemberCard" />
+          <EntitySet Name="Promotion" EntityType="Self.Promotion" />
+          <EntitySet Name="SysLog" EntityType="Self.SysLog" />
+          <EntitySet Name="SystemModule" EntityType="Self.SystemModule" />
+          <EntitySet Name="SystemModuleRight" EntityType="Self.SystemModuleRight" />
+          <EntitySet Name="SystemRole" EntityType="Self.SystemRole" />
+          <EntitySet Name="SystemRoleRight" EntityType="Self.SystemRoleRight" />
+          <EntitySet Name="SystemUser" EntityType="Self.SystemUser" />
+          <AssociationSet Name="FK_SystemModuleRight_SystemModule" Association="Self.FK_SystemModuleRight_SystemModule">
+            <End Role="SystemModule" EntitySet="SystemModule" />
+            <End Role="SystemModuleRight" EntitySet="SystemModuleRight" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SystemRoleRight_SystemModule" Association="Self.FK_SystemRoleRight_SystemModule">
+            <End Role="SystemModule" EntitySet="SystemModule" />
+            <End Role="SystemRoleRight" EntitySet="SystemRoleRight" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SystemRoleRight_SystemRole" Association="Self.FK_SystemRoleRight_SystemRole">
+            <End Role="SystemRole" EntitySet="SystemRole" />
+            <End Role="SystemRoleRight" EntitySet="SystemRoleRight" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SmsModelStoreContainer" CdmEntityContainer="SmsEntities">
+          <EntitySetMapping Name="CardHistory">
+            <EntityTypeMapping TypeName="SmsModel.CardHistory">
+              <MappingFragment StoreEntitySet="CardHistory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberCard">
+            <EntityTypeMapping TypeName="SmsModel.MemberCard">
+              <MappingFragment StoreEntitySet="MemberCard">
+                <ScalarProperty Name="TotalPresent" ColumnName="TotalPresent" />
+                <ScalarProperty Name="CardNo" ColumnName="CardNo" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Banlance" ColumnName="Banlance" />
+                <ScalarProperty Name="TotalMoney" ColumnName="TotalMoney" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Promotion">
+            <EntityTypeMapping TypeName="SmsModel.Promotion">
+              <MappingFragment StoreEntitySet="Promotion">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="MinValue" ColumnName="MinValue" />
+                <ScalarProperty Name="Money" ColumnName="Money" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SysLog">
+            <EntityTypeMapping TypeName="SmsModel.SysLog">
+              <MappingFragment StoreEntitySet="SysLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemModule">
+            <EntityTypeMapping TypeName="SmsModel.SystemModule">
+              <MappingFragment StoreEntitySet="SystemModule">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="IsDisplay" ColumnName="IsDisplay" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemModuleRight">
+            <EntityTypeMapping TypeName="SmsModel.SystemModuleRight">
+              <MappingFragment StoreEntitySet="SystemModuleRight">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+                <ScalarProperty Name="RightId" ColumnName="RightId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemRole">
+            <EntityTypeMapping TypeName="SmsModel.SystemRole">
+              <MappingFragment StoreEntitySet="SystemRole">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemRoleRight">
+            <EntityTypeMapping TypeName="SmsModel.SystemRoleRight">
+              <MappingFragment StoreEntitySet="SystemRoleRight">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RightId" ColumnName="RightId" />
+                <ScalarProperty Name="ModuleId" ColumnName="ModuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemUser">
+            <EntityTypeMapping TypeName="SmsModel.SystemUser">
+              <MappingFragment StoreEntitySet="SystemUser">
+                <ScalarProperty Name="CurrentLoginTime" ColumnName="CurrentLoginTime" />
+                <ScalarProperty Name="LastLoginTime" ColumnName="LastLoginTime" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="OpratePwd" ColumnName="OpratePwd" />
+                <ScalarProperty Name="TrueName" ColumnName="TrueName" />
+                <ScalarProperty Name="LinkPhone" ColumnName="LinkPhone" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="RoleList" ColumnName="RoleList" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

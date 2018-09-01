@@ -1,0 +1,92 @@
+﻿@model List<Sms.Entity.ViewModel.RoleModuleRight>
+
+
+@section head{
+    <link href="~/Content/tree.css" rel="stylesheet" />
+    <style type="text/css">
+        .well label {
+            display: initial;
+            margin-left: 10px;
+            color: #08c;
+        }
+    </style>
+}
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">用户管理</a>
+    <a href="javascript:void(0);" class="tip-bottom" title="角色列表">角色管理</a>
+    <a href="javascript:void(0);" class="current">角色权限配置</a>
+</div>
+
+
+<div class="container-fluid">
+    <div class="widget-box">
+        <div class="widget-title">
+            <h2 style="line-height: 29px; margin: 3px 0px; padding-left: 30px">
+                <button class="btn btn-primary" onclick="" id="btnSave"><i class="icon-ok icon-white"></i>保存</button>
+                <button class="btn btn-success" id="btnCheckAll">全选</button>
+                <button class="btn btn-info" id="btnToggle">全部收起</button>
+                <button class="btn" onclick="history.back();">返回</button>
+            </h2>
+        </div>
+
+        <div class="widget-content nopadding">
+            <div class="tree well">
+                <ul>
+
+                    @{
+                        var topList = Model.Where(m => m.Parent == 0).OrderBy(m => m.Sort);
+                        foreach (var top in topList)
+                        {
+                        <li>
+                            @{
+                            var childList = Model.Where(m => m.Parent == top.Value).OrderBy(m => m.Sort);
+                        
+                                <span><i class="@(childList.Count() > 0 ? "icon-minus-sign" : "icon-flag")"></i>@(top.Name) </span>
+                           
+                                <ul>
+                                    @foreach (var child in childList)
+                                    {
+                                        <li>
+                                            <span><i class="icon-flag"></i>@child.Name </span>
+                                            @foreach (var right in child.RightList)
+                                            {
+                                                <label>
+                                                    <input type="checkbox" class="checkbox" value="@(right.Value + "|" + child.Value)" @(right.Checked ? " checked=\"checked\"" : "")  />@right.Text</label>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            
+                            }
+                        </li>
+                        }
+                    }
+
+
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#btnSave").click(function () {
+                OnSubmiting();
+                var selectedItem = $("input:checkbox:checked");
+                var idStr = '';
+                $.each(selectedItem, function (index, obj) {
+                    idStr += obj.value + ',';
+                });
+                $.post("@Url.Action("SaveModuleRight")", { "rightStr":idStr,"role": @ViewBag.RoleId }, function (data) {
+                    AjaxCompelement();
+                    show_message(data.Status, data.MsgText, data.Url);
+                }, "json");
+            });
+        
+        })
+
+    </script>}

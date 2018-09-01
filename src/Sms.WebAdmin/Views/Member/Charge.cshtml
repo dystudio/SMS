@@ -1,0 +1,157 @@
+﻿@model Sms.Entity.CardHistory
+
+@section head{
+    <style type="text/css">
+        .card_box {
+            display: none;
+            width: 300px;
+            height: 180px;
+            margin-top: 20px;
+            background-image: url('/Content/Images/pic1.png');
+            background-size: cover;
+            color: #c00;
+        }
+
+            .card_box .number {
+                font-size: 18px;
+                color: #c51d92;
+                line-height: 30px;
+                text-align: right;
+                padding: 10px 10px 0 0;
+                font-family: inherit;
+            }
+
+            .card_box .money {
+                text-align: center;
+                line-height: 40px;
+                font-size: 16px;
+                padding: 20px 0 0 0;
+            }
+
+                .card_box .money em:first-child {
+                    font-size: 40px;
+                }
+
+            .card_box .info {
+                text-align: left;
+                display: block;
+                font-size: 18px;
+                padding: 33px 0 0 15px;
+                line-height: 20px;
+                color: #ff4701;
+                font-family: cursive;
+            }
+
+                .card_box .info span {
+                    padding: 0px 0px 0px 10px;
+                    color: #4791c5;
+                    font-size: 12px;
+                }
+    </style>
+}
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home","Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
+    <a href="javascript:void(0);" class="current">会员卡充值</a>
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-pencil"></i>
+                    </span>
+                    <h5>会员卡充值</h5>
+                </div>
+                <form class="form-horizontal">
+                    <div class="widget-content nopadding">
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="controls">
+                                <input type="text" id="txtCardKey" tabindex="1" placeholder="会员卡号或手机号" />
+                                &nbsp;&nbsp;
+                                <input type="button" value="查询" class="btn btn-primary" tabindex="2" id="btnSearch" />
+                                <input type="button" value="清空" class="btn" id="btnClear" onclick="ClearCharge(true);" />
+                                @*以下是查询出来的会员卡信息*@
+                                <br />
+                                <div class="card_box" id="card_box">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                @using (Ajax.BeginForm("Charge", "Member", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement();" }, new { @class = "form-horizontal", id = "ChargeCard" }))
+                {
+                    <div class="widget-content nopadding" id="charge_box" style="display:none">
+                        @Html.HiddenFor(model => model.CardNo)
+                        <div class="control-group">
+                            <label class="control-label">充值金额</label>
+                            <div class="controls">
+                                @Html.EditorFor(model => model.Value)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">操作密码</label>
+                            <div class="controls">
+                                <input type="password" name="opratepwd" id="opratepwd" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="提交" class="btn btn-info" onclick="if ($('#charge_box .success').length == 2) { return confirm('确认提交充值信息？') } else { return true; }" />
+                            <input type="button" value="重置" class="btn" onclick="resetForm();" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script>
+        $(function () {
+            $("#txtCardKey").focus();
+            $('#txtCardKey').bind('keypress', function (event) {
+                if (event.keyCode == "13") {
+                    event.preventDefault();
+                    //回车执行查询
+                    $('#btnSearch').click();
+                }
+            });
+            $("#btnSearch").bind("click", function () {
+                var key = $("#txtCardKey").val();
+                if (key.length > 0) {
+                    AjaxFunction("post", "@Url.Action("SearchMemberCard")", { "key": key }, function (data) {
+                        //show_message(data.Status, data.MsgText, data.Url);
+                        $("#CardNo").val(data.Data.CardNo);
+                        var money = data.Data.Banlance.split('.');
+                        $("#card_box").html("<p class=\"number\">NO.<span>" + data.Data.CardNo + "</span></p> <div class=\"money\">￥<em>" + money[0] + "</em><em>." + money[1] + "</em></div> <label class=\"info\">" + data.Data.Name + "<span>" + data.Data.Mobile + "</span></label> ").css("display", "inline-block");
+                        $("#charge_box").show(300);
+                        $("#Value").focus();
+                        var rules = { Value: { required: true, number: true, min: 1, max: 1000 }, opratepwd: { required: true } };
+                        var message = { Value: { required: "多少充点钱吧~", number: "非法RMB啊，我不收~", min: "1块钱都不给我~", max: "土豪还是少充点吧，1000就好~" }, opratepwd: { required: "安全起见，验证一下您的身份哈~" } }
+                        basic_validate("ChargeCard", rules, message);
+                    }, function (data) {
+                        ClearCharge();
+                    });
+                }
+                else { $("#txtCardKey").focus(); }
+            });
+        });
+
+        function ClearCharge(remove) {
+            $("#card_box").hide().html("");
+            $("#charge_box").hide(150);
+            resetForm();
+            $("#txtCardKey").focus();
+            if (remove === true) $("#txtCardKey").val("");
+        }
+
+        function resetForm() {
+            $("#ChargeCard :input").not(":button, :submit, :reset").val("").removeAttr("checked").remove("selected");
+            $('#charge_box .control-group').removeClass('success');
+        }
+    </script>
+}

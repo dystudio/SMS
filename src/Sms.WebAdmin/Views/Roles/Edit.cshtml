@@ -1,0 +1,60 @@
+﻿@model Sms.Entity.SystemRole
+
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">用户管理</a>
+    <a href="javascript:void(0);" title="角色列表" class="tip-bottom">角色管理</a>
+    <a href="javascript:void(0);" class="current">编辑角色信息</a>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                @using (Ajax.BeginForm("Edit", "Roles", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "RolesEdit" }))
+                {
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-pencil"></i>
+                        </span>
+                        <h5>编辑角色信息</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+                        <div class="control-group">
+                            <label class="control-label">名称</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Name)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                @Html.EditorFor(model => model.Sort)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">备注</label>
+                            <div class="controls">
+                                @Html.TextAreaFor(model => model.Remark)
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="保存" class="btn btn-primary" />
+                            <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
+                        </div>
+                    </div>
+                    
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script>
+        $(function() {
+            var rules={ Name:{  required:true  },Sort:{ required:true,digits:true }};
+            basic_validate("RolesEdit",rules);
+        });
+    </script>
+}

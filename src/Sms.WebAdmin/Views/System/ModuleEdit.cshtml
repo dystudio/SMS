@@ -1,0 +1,99 @@
+﻿@model Sms.Entity.SystemModule
+
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">系统管理</a>
+    <a href="@Url.Action("Index", new { exhibitionId = ViewBag.Exhibition })" class="tip-bottom" title="模块列表">模块管理</a>
+    <a href="javascript:void(0);" class="current">编辑模块信息</a>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                @using (Ajax.BeginForm("ModuleEdit", "System", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "ModuleEdit" }))
+                {
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-pencil"></i>
+                        </span>
+                        <h5>编辑模块信息</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+
+                        <div class="control-group">
+                            <label class="control-label">模块名称</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Name)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">所属模块</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(model => model.ParentId, ViewBag.ddlParent as List<SelectListItem>, "-请选择-")
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">排序</label>
+                            <div class="controls">
+                                @Html.EditorFor(model => model.Sort)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">是否显示</label>
+                            <div class="controls">
+                                <label>@Html.CheckBoxFor(model => model.IsDisplay, new { @checked = "checked" }) </label>
+                            </div>
+                        </div>
+                        <div class="control-group" id="txtUrl" style="display:@(Model != null && Model.ParentId != 0 ? "block" : "none")">
+                            <label class="control-label">链接地址</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Url)
+                            </div>
+                        </div>
+                        <div class="control-group" id="ddlRight" style="display:@(Model != null && Model.ParentId != 0 ? "block" : "none")">
+                            <label class="control-label">操作权限</label>
+                            <div class="controls">
+                                <select multiple="multiple" id="RightList" style="width: 350px" name="rightlist">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="保存" class="btn btn-primary" />
+                            <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Module", "System")    '" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script>
+        $(function() {
+            var rules={ Name:{ required:true },Sort:{ required:true,digits:true },ParentId:{required:true},Url:{required:true}};
+            basic_validate("ModuleEdit",rules);
+            $("#ParentId").change(function(){
+                if(this.value!=""&&this.value!="0"){
+                    $("#txtUrl,#ddlRight").show('fast');
+                }
+                else
+                {
+                    $("#txtUrl,#ddlRight").hide('fast');
+                }
+            });
+            $.post("@Url.Action("LoadModuleRight")",{"module":@(Model != null ? Model.Id : 0)},function(data){
+                if(data.Status){
+                    $.each(data.Data,function(index,item){
+                        $("#RightList").append("<option value=\""+item.Value+"\" "+(item.Selected?"selected=\"selected\"":"")+" >"+item.Text+"</option>");
+                    });
+                    $("#RightList").select2();
+                }
+                else
+                {
+                    show_message(false, data.MsgText, data.Url);
+                }
+            },"json");
+        });
+    </script>
+}
+

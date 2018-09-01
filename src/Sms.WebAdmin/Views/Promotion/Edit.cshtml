@@ -1,0 +1,115 @@
+﻿
+@model Sms.Entity.Promotion
+@using Sms.Common
+@section head{
+
+    <link href="~/Content/datepicker.css" rel="stylesheet" />
+}
+<div id="breadcrumb">
+    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
+    <a href="javascript:void(0);" class="tip-bottom">销售管理</a>
+    <a href="@Url.Action("Index", "Promotion")" title="促销列表" class="tip-bottom">门店促销</a>
+    <a href="javascript:void(0);" class="current">编辑促销信息</a>
+</div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                @using (Ajax.BeginForm("Edit", "Promotion", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "EditPromotion" }))
+                {
+                    <div class="widget-title">
+                        <span class="icon">
+                            <i class="icon-pencil"></i>
+                        </span>
+                        <h5>编辑促销信息</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <div class="control-group">
+                            <label class="control-label">标题</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Title, new { @style = "width:300px" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">类型</label>
+                            <div class="controls">
+                                @{
+                                    Dictionary<string, int> dictType = EnumHepler.GetEnumData(typeof(EnumHepler.PromotionType));
+                                }
+                                @Html.DropDownListFor(model => model.Type, new SelectList(dictType, "Value", "Key", true), "", new { @style = "width:100px" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">开始日期</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.StartDate)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">结束日期</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.EndDate)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">最低金额</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.MinValue)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">满减/赠送 金额</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(model => model.Money)
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">状态</label>
+                            <div class="controls">
+                                @{
+                                    Dictionary<string, int> dictStatus = EnumHepler.GetEnumData(typeof(EnumHepler.PromotionStatus));
+                                    dictStatus.Remove(EnumHepler.GetEnumDescription(EnumHepler.PromotionStatus.Deleted));
+                                }
+                                @Html.DropDownListFor(model => model.Status, new SelectList(dictStatus, "Value", "Key", true), "", new { @style = "width:100px" })
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <input type="submit" value="保存" class="btn btn-primary" />
+                            <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <ul class="activity-list">
+                            <li>
+                                <a href="javascript:void(0);">
+                                    <i class="icon-info-sign"></i>
+                                    满足多种促销条件时默认使用<strong>最新发布的</strong>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                                    }
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+    <script src="~/Scripts/unicorn/jquery.ui.custom.js"></script>
+    <script src="~/Scripts/unicorn/bootstrap-datepicker.js"></script>
+    <script>
+        $(function () {
+            $("#StartDate,#EndDate").datepicker();
+            var rules = {
+                Title: {
+                    required: true,
+                    maxlength: 100
+                },
+                Type: {
+                    required: true
+                },
+                StartDate: { required: true }, EndDate: { required: true }, MinValue: { required: true, number: true, min: 0, max: 1000 }, Money: { required: true, number: true, min: 0.01, max: 1000 }, Status: { required: true }
+            };
+            basic_validate("EditPromotion", rules);
+        });
+    </script>
+}
