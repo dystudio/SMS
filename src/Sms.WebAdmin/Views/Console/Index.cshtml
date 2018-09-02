@@ -17,17 +17,21 @@
     <link rel="stylesheet" href="~/Content/uniform.css" />
     <link rel="stylesheet" href="~/Content/unicorn.main.css" />
     <link rel="stylesheet" href="~/Content/unicorn.grey.css" class="skin-color" />
+    <link href="~/Content/smooth-scrollbar.css" rel="stylesheet" />
     <style type="text/css">
         html, body {
-            min-height:100%;
+            min-height: 100%;
         }
+
         tbody .title {
             width: 23%;
             text-align: right;
         }
-        #sidebar a{
-            cursor:pointer;
+
+        #sidebar a {
+            cursor: pointer;
         }
+
         .copyright {
             color: #aaaaa0;
             text-align: center;
@@ -64,23 +68,23 @@
         </ul>
     </div>
     <div id="sidebar" style="">
-        <ul style="height:100%;overflow:auto">
-            <li><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
+        <ul style="height:100%;overflow:auto" id="menu_tree" data-scrollbar>
+            <li class="menu-1"><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
             @if (Model != null)
-        {
-            foreach (var node in Model)
             {
-                <li class="submenu @(node.Title.Contains("系统")?"":"open")">
-                    <a style="cursor:pointer"><i class="icon icon-th-list"></i><span>@node.Title</span> <span class="label">@node.ChildNode.Count</span></a>
-                    <ul>
-                        @foreach (var child in node.ChildNode)
-                    {
-                        <li><a page="@child.Url" class="page-url" node="@(child.Id)">@child.Title</a></li>
+                foreach (var node in Model)
+                {
+                    <li class="menu-1 submenu @(node.Title.Contains("系统")?"":"open")">
+                        <a style="cursor:pointer"><i class="icon icon-th-list"></i><span>@node.Title</span> <span class="label">@node.ChildNode.Count</span></a>
+                        <ul class="sub-box">
+                            @foreach (var child in node.ChildNode)
+                            {
+                                <li class="menu-2"><a page="@child.Url" class="page-url" node="@(child.Id)">@child.Title</a></li>
+                            }
+                        </ul>
+                    </li>
                 }
-                    </ul>
-                </li>
-        }
-    }
+            }
 
         </ul>
         <div class="copyright">
@@ -90,9 +94,8 @@
     </div>
     <div id="content">
         <iframe id="mainframe" src="@Url.Action("Home", "Console")" style="width:100%;border:none;height:100%; float:left;" name="mainframe"></iframe>
-
     </div>
-    
+
     <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -145,12 +148,14 @@
 <script src="~/Scripts/unicorn/bootstrap.min.js"></script>
 <script src="~/Scripts/unicorn/unicorn.js"></script>
 <script src="~/Scripts/jquery.cookie.js"></script>
+<script src="~/Scripts/smooth-scrollbar.js"></script>
 <script type="text/javascript">
     $(function () {
         setInterval("linkweb.innerHTML=new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay());", 1000);
         var h = $(document).height() - $("#header").height();
         $("#content").height(h );
-        $("#sidebar").height(h -20)
+        $("#sidebar").height(h - 20);
+        var wr =  Scrollbar.init(document.getElementById("menu_tree"), { });
         $(".page-url").click(function () {
             $.cookie('thenode', $(this).attr("node"));//当前操作的模块
             document.getElementById("mainframe").src = $(this).attr("page");

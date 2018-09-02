@@ -48,6 +48,9 @@
                     color: #4791c5;
                     font-size: 12px;
                 }
+        .site-stats li{
+            padding:7px 5px;
+        }
     </style>
 }
 
@@ -59,11 +62,11 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span12">
+        <div class="span8">
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon">
-                        <i class="icon-pencil"></i>
+                        <i class="icon-shopping-cart"></i>
                     </span>
                     <h5>会员卡消费</h5>
                 </div>
@@ -92,24 +95,15 @@
                             <label class="control-label">消费金额</label>
                             <div class="controls">
                                 @Html.TextBoxFor(model => model.Value, new { style = "width:100px" }) 元
-                                &nbsp;
-                                <select id="default_price" style="width:110px">
-                                    <option selected="selected">选择价格</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="12">12</option>
-                                    <option value="15">15</option>
-                                </select>
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">消费说明</label>
                             <div class="controls">
-                                @Html.TextAreaFor(model => model.Remark)
+                                @Html.TextAreaFor(model => model.Remark,new { style= "width:50%" })
+                                &nbsp;
+                                <small style="font-style: italic;">快速输入</small>
+                                <i class=" icon-hand-right"></i>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -120,7 +114,36 @@
                 }
             </div>
         </div>
-    </div>
+        <div class="span4">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon">
+                        <i class="icon-tags"></i>
+                    </span>
+                    <h5>快速备注</h5>
+                    <h5 style="float:right"><a href="@Url.Action("Edit")" class="">添加</a></h5>
+                </div>
+                <div class="widget-content" style="padding:12px 7px">
+                    <div class="row-fluid">
+                        <ul class="site-stats" id="quick_remark">
+                            <li>
+                                防守打法四川省1
+                                <a href="" style="float:right" title="删除"><i class="icon-remove"></i></a>
+                            </li>
+                            <li>
+                                防守打法四川省2
+                                <a href="" style="float:right" title="删除"><i class="icon-remove"></i></a>
+                            </li>
+                            <li>
+                                防守打法四川省3
+                                <a href="" style="float:right" title="删除"><i class="icon-remove"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
 </div>
 @section foot{
     <script>
@@ -153,11 +176,10 @@
                 else { $("#txtCardKey").focus(); }
             });
 
-            $("#default_price").change(function () {
-                if (parseInt(this.value) > 0) {
-                    $("#Value").val(this.value).focus();
-                }
-                else { $("#Value").val("").parents(".control-group").removeClass('success'); }
+            $("#quick_remark li").bind("click", function () {
+                if (!$("#charge_box").is(":hidden")) {
+                    $("#Remark").text(this.innerText);
+                }                
             });
         });
 
