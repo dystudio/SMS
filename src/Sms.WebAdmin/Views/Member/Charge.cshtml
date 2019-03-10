@@ -62,7 +62,7 @@
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon">
-                        <i class="icon-pencil"></i>
+                        <i class="icon-qrcode"></i>
                     </span>
                     <h5>会员卡充值</h5>
                 </div>
@@ -92,16 +92,17 @@
                             <div class="controls">
                                 @Html.EditorFor(model => model.Value)
                                 &nbsp;
-                                <select id="default_price" style="width:110px">
-                                    <option selected="selected">选择价格</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                    <option value="150">150</option>
-                                    <option value="200">200</option>
-                                    <option value="300">300</option>
-                                    <option value="400">400</option>
-                                    <option value="500">500</option>
-                                </select>
+                                <div id="default_price" style="display: inline-block;">
+                                    <a class="label label-important">50</a>
+                                    <a class="label label-important">100</a>
+                                    <a class="label label-important">150</a>
+                                    <a class="label label-important">200</a>
+                                    <a class="label label-important">300</a>
+                                    <a class="label label-important">400</a>
+                                    <a class="label label-important">500</a>
+                                    <a class="label label-important">800</a>
+                                    <a class="label label-important">1000</a>
+                                </div>
                             </div>
                         </div>
                         <div class="control-group">
@@ -150,11 +151,9 @@
                 }
                 else { $("#txtCardKey").focus(); }
             });
-            $("#default_price").change(function () {
-                if (parseInt(this.value) > 0) {
-                    $("#Value").val(this.value).focus();
-                }
-                else { $("#Value").val("").parents(".control-group").removeClass('success'); }
+            $("#default_price a").bind("click", function (e) {
+                e.preventDefault();
+                $("#Value").val(this.innerText).focus();
             });
         });
 

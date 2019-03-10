@@ -67,82 +67,82 @@
         </ul>
     </div>
     <div id="sidebar" style="overflow:hidden; box-sizing:border-box;">
-        <ul style="height:100%;overflow-y: scroll;width:237px;">
-            <li><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
+        <ul style="height:100%;overflow-y: scroll;width:237px;" id="menu_tree" data-scrollbar>
+            <li class="menu-1"><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
             @if (Model != null)
             {
                 foreach (var node in Model)
                 {
-                    <li class="submenu @(node.Title.Contains("系统")?"":"open")">
+                    @*<li><a page="@node.Url" class="page-url" node="@(node.Id)">@node.Title</a></li>*@
+                    <li class="menu-1 submenu @(node.Title.Contains("系统") ? "" : "open")">
                         <a style="cursor:pointer"><i class="icon icon-th-list"></i><span>@node.Title</span> <span class="label">@node.ChildNode.Count</span></a>
-                        <ul>
+                        <ul class="sub-box">
                             @foreach (var child in node.ChildNode)
-                    {
-                                <li><a page="@child.Url" class="page-url" node="@(child.Id)">@child.Title</a></li>
+                            {
+                                <li class="menu-2"><a page="@child.Url" class="page-url" node="@(child.Id)">@child.Title</a></li>
                             }
                         </ul>
                     </li>
                 }
             }
-            <li style="height:20px;border-bottom:none"></li>
-        </ul>
-        <div class="copyright">
-            ©@DateTime.Now.Year  Power By
-            <span style="cursor:pointer;color:#6db6e5" onclick="window.open('http://wpa.qq.com/msgrd?v=3&uin=591310381&site=qq&menu=yes')" title="联系作者">HOHO</span>
+                <li style="height:20px;border-bottom:none"></li>
+            </ul>
+            <div class="copyright">
+                ©@DateTime.Now.Year  Power By
+                <span style="cursor:pointer;color:#6db6e5" onclick="window.open('http://wpa.qq.com/msgrd?v=3&uin=591310381&site=qq&menu=yes')" title="联系作者">HOHO</span>
+            </div>
         </div>
-    </div>
-    <div id="content">
-        <iframe id="mainframe" src="@Url.Action("Home", "Console")" style="width:100%;border:none;height:100%; float:left;" name="mainframe"></iframe>
+        <div id="content">
+            <iframe id="mainframe" src="@Url.Action("Home", "Console")" style="width:100%;border:none;height:100%; float:left;" name="mainframe"></iframe>
+        </div>
 
-    </div>
-
-    <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" onclick="CloseDialog();"><span aria-hidden="true">&times;</span></button>
-                    <h3 class="modal-title" id="myModalLabel">个人信息</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover ">
-                            <tbody>
-                                <tr>
-                                    <td class="title">用户名：</td>
-                                    <td id="UserName"></td>
-                                </tr>
-                                <tr>
-                                    <td class="title">真实姓名：</td>
-                                    <td id="TrueName"></td>
-                                </tr>
-                                <tr>
-                                    <td class="title">手机号码：</td>
-                                    <td id="LinkPhone"></td>
-                                </tr>
-                                <tr>
-                                    <td class="title">角色：</td>
-                                    <td id="RoleList"></td>
-                                </tr>
-                                <tr>
-                                    <td class="title">创建时间：</td>
-                                    <td id="CreateTime"></td>
-                                </tr>
-                                <tr>
-                                    <td class="title">上次登录时间：</td>
-                                    <td id="LastLoginTime"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" onclick="CloseDialog();"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">个人信息</h3>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" onclick="CloseDialog();">关闭</button>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover ">
+                                <tbody>
+                                    <tr>
+                                        <td class="title">用户名：</td>
+                                        <td id="UserName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">真实姓名：</td>
+                                        <td id="TrueName"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">手机号码：</td>
+                                        <td id="LinkPhone"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">角色：</td>
+                                        <td id="RoleList"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">创建时间：</td>
+                                        <td id="CreateTime"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title">上次登录时间：</td>
+                                        <td id="LastLoginTime"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" onclick="CloseDialog();">关闭</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-backdrop fade " style="display: none" id="modalbackground"></div>
-</body>
+        <div class="modal-backdrop fade " style="display: none" id="modalbackground"></div>
+    </body>
 </html>
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="~/Scripts/unicorn/bootstrap.min.js"></script>
