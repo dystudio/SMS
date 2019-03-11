@@ -68,7 +68,7 @@
     </div>
     <div id="sidebar" style="overflow:hidden; box-sizing:border-box;">
         <ul style="height:100%;overflow-y: scroll;width:237px;" id="menu_tree" data-scrollbar>
-            <li class="menu-1"><a href="@Url.Action("Home", "Console")" target="mainframe"><i class="icon icon-home"></i><span>首页</span></a></li>
+            <li class="menu-1 active"><a page="@Url.Action("Home", "Console")" class="page-url"><i class="icon icon-home"></i><span>首页</span></a></li>
             @if (Model != null)
             {
                 foreach (var node in Model)
@@ -157,6 +157,8 @@
         $(".page-url").click(function () {
             $.cookie('thenode', $(this).attr("node"));//当前操作的模块
             document.getElementById("mainframe").src = $(this).attr("page");
+            $("#sidebar li").removeClass("active");
+            $(this).parent().addClass("active");
         });
         $("#btnFrefresh").click(function () {
             document.getElementById("mainframe").contentWindow.location.reload(true);

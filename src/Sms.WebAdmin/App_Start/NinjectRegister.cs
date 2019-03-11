@@ -15,6 +15,8 @@ namespace Sms.WebAdmin.App_Start
         public static void Register(HttpConfiguration config)
         {
             Ninject.IKernel kernel = new Ninject.StandardKernel();
+            //允许私有属性注入
+            kernel.Settings.InjectNonPublic = true;
 
             //service binding
             kernel.Bind<IRepositoryFactory>().To<RepositoryFactory>();

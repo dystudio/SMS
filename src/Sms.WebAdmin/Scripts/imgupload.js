@@ -50,36 +50,41 @@ function BindEvent() {
             var newValue = "";
             base.children("li").each(function (i) {
                 var excision = i == 0 ? "" : "$";
-                newValue += excision + $(this).find("img").attr("src").replace("/Upload/Image/", "");
+                newValue += excision + $(this).find("img").attr("src");
             });
             $_input.val(newValue);
         }
     });
 
-    openView();
+    //openView();
 }
 
 
 var defaultOpts = {
-    mode: 1,
-    maxSize: 2048000,
-    ext: 'jpg,jpeg,bmp,png'
+    mode: 0,
+    maxCount: 1,
+    maxSize: 2,//M
+    ext: 'png,jpeg'
 };
 
 $.fn.extend({
     uploadImage: function (option) {
         var _this = $(this)[0];
-        console.log($(this))
+        var $athis = $(_this);
+        var $_moreImg = $athis.next(".thumbnails");
+        var $_input = $athis.prevAll("input[type='hidden']");
         option = $.extend(option, defaultOpts);
         var formid = "upload_from_" + _this.id, btnid = "upload_btn_" + _this.id;
-        document.write("<form id=\"" + formid + "\" action=\"/FileHandler/Image\" enctype=\"multipart/form-data\" method=\"post\" style=\"display:none\"> <input type=\"file\" id=\"" + _this.id + "\" name=\"filedata\" /> </form>");
+        var extArry = option.ext.split(',');
+        var accept = [];
+        for (var i = 0; i < extArry.length; i++) {
+            accept.push("image/" + extArry[i]);
+        }
+        $("body").append("<form id=\"" + formid + "\" action=\"/FileHandler/Image\" enctype=\"multipart/form-data\" method=\"post\" style=\"display:none\"> <input type=\"file\" accept=\"" + accept.join(',') + "\" id=\"" + btnid + "\" name=\"filedata\" multiple=\"multiple\" /> </form>");
         _this.onclick = function () { $("#" + btnid).click(); }
         $("#" + formid).ajaxForm(function (obj) {
             if (obj.Status) {
-                var $athis = $(_this);
-                var $_moreImg = $athis.next(".thumbnails");
-                var $_input = $athis.prevAll("input[type='hidden']");
-                var newImg = '<li class="span2"> <a href="javascript:" title="点击放大"  class="thumbnail"> <img src="' + obj.Url + '" alt=""> </a> <div class="actions"> <a title="移除" href="javascript:" class="op"><i class="icon-remove icon-white"></i></a> </div> </li>';
+                var newImg = '<li class="span2"> <a href="' + obj.Url + '" title="点击查看原图" target="_blank"  class="thumbnail"> <img src="' + obj.Url + '" alt=""> </a> <div class="actions"> <a title="移除" href="javascript:" class="op"><i class="icon-remove"></i></a> </div> </li>';
                 if (option.mode == 1) {//多图列表
                     $_moreImg.append(newImg);
                     var oldValue = $_input.val();//拿到旧值
@@ -102,7 +107,20 @@ $.fn.extend({
                 show_message(false, obj.MsgText, null);
             }
         });
-        $("#" + btnid).bind("change", function () {
+        $("#" + btnid).bind("change", function (e) {
+            var file = e.currentTarget.files[0];
+            if (accept.indexOf("image/*") == -1 && accept.indexOf(file.type) == -1) {
+                alert("只允许上传" + option.ext + "格式的图片！");
+                return false;
+            }
+            if (file.size > option.maxSize * 1024 * 1024) {
+                alert("图片超过最大限制，最大为" + option.maxSize + "M！");
+                return false;
+            }
+            if ($_moreImg.find("li").length >= option.maxCount) {
+                alert("最多上传" + option.maxCount + "张图片！");
+                return false;
+            }
             $("#" + formid).submit();
         });
     }

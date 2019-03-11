@@ -1250,14 +1250,14 @@ div.dataTables_wrapper .ui-widget-header {
 .thumbnails .actions {
 	width: 16px;
 	height: 16px;
-	background-color: #000000;
-	padding: 5px 8px;
+	/*background-color: #000000;*/
+	/*padding: 5px 5px;*/
 	border-radius: 5px;
 	position: absolute;
-	top: 50%;
-	left: 55%;
-	margin-top: -13px;
-	margin-left: -24px;
+	top: 2%;
+	right: 2%;
+	/*margin-top: -13px;
+	margin-left: -24px;*/
 	opacity: 0;
 	-moz-transition: opacity 0.3s ease-in-out;
 }
