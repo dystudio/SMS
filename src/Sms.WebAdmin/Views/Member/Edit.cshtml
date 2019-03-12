@@ -119,63 +119,64 @@
                             <label class="control-label">图片</label>
                             <div class="controls">
                                 @Html.HiddenFor(model => model.CreateUser)
-                                <a href="javascript:" class="btn btn-info" id="btn_upload"><i class="icon-picture icon-white "></i>&nbsp 选择图片</a>
-                                <ul class="thumbnails">
-                                    @if (Model != null && !string.IsNullOrEmpty(Model.CreateUser))
-                                    {
-                                        <li class="span2">
-                                            <a href="javascript:" title="点击放大" class="thumbnail">
-                                                <img src="" alt="">
-                                            </a>
-                                            <div class="actions"><a title="移除" href="javascript:" class="op"><i class="icon-remove icon-white"></i></a></div>
-                                        </li>
-                                    }
-                                </ul>
+                                @*<a href="javascript:" class="btn btn-info" id="btn_upload"><i class="icon-picture icon-white "></i>&nbsp 选择图片</a>
+                                    <ul class="thumbnails">
+                                        @if (Model != null && !string.IsNullOrEmpty(Model.CreateUser))
+                                        {
+                                            <li class="span2">
+                                                <a href="javascript:" title="点击放大" class="thumbnail">
+                                                    <img src="" alt="">
+                                                </a>
+                                                <div class="actions"><a title="移除" href="javascript:" class="op"><i class="icon-remove icon-white"></i></a></div>
+                                            </li>
+                                        }
+                                    </ul>*@
                             </div>
                         </div>
-                            <div class="form-actions">
-                                <input type="submit" value="保存" class="btn btn-primary" />
-                                <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
-                            </div>
+                        <div class="form-actions">
+                            <input type="submit" value="保存" class="btn btn-primary" />
+                            <input type="button" value="返回" class="btn" onclick="location.href='@Url.Action("Index")    '" />
                         </div>
-
-                        }
                     </div>
-                </div>
+
+                            }
             </div>
         </div>
-        @section foot{
-<script src="~/Scripts/jquery.form.js"></script>
-<script src="~/Scripts/imgupload.js"></script>
-            <script>
-                $(function () {
-                    $("#btn_upload").uploadImage({});
-                    var rules = {
-                        CardNo: {
-                            required: true,
-                            remote: {
-                                url: "@Url.Action("CheckCardNo")",
-                                type: "post",
-                                data: {
-                                    'card': $('#CardNo').val()
-                                }
-                            }
-                        },
-                        Mobile: {
-                            required: true,
-                            mobile: true,
-                            remote: {
-                                url: "@Url.Action("CheckMobile")",
-                                type: "post",
-                                data: {
-                                    'mobile': $('#Mobile').val(), 'oldmobile': $('#OldMobile').val()
-                                }
-                            }
-                        },
-                        Password: { required: true }, Status: { required: true }
-                    };
-                    var message = { CardNo: { required: "*必填字段", remote: "*此卡号已被注册" }, Mobile: { required: "*必填字段", remote: "*此手机号已被绑定" } };
-                    basic_validate("EditMember", rules, message);
-                });
-            </script>
-        }
+    </div>
+</div>
+@section foot{
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/imgupload.js"></script>
+    <script>
+        $(function () {
+            $('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+            $("#CreateUser").uploadImage({});
+            var rules = {
+                CardNo: {
+                    required: true,
+                    remote: {
+                        url: "@Url.Action("CheckCardNo")",
+                        type: "post",
+                        data: {
+                            'card': $('#CardNo').val()
+                        }
+                    }
+                },
+                Mobile: {
+                    required: true,
+                    mobile: true,
+                    remote: {
+                        url: "@Url.Action("CheckMobile")",
+                        type: "post",
+                        data: {
+                            'mobile': $('#Mobile').val(), 'oldmobile': $('#OldMobile').val()
+                        }
+                    }
+                },
+                Password: { required: true }, Status: { required: true }
+            };
+            var message = { CardNo: { required: "*必填字段", remote: "*此卡号已被注册" }, Mobile: { required: "*必填字段", remote: "*此手机号已被绑定" } };
+            basic_validate("EditMember", rules, message);
+        });
+    </script>
+}

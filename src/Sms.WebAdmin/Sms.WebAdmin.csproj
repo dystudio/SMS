@@ -291,13 +291,10 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\commom.js" />
     <Content Include="Scripts\echarts.min.js" />
     <Content Include="Scripts\imgupload.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui.css" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\jquery.cookie.js" />
@@ -307,41 +304,21 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.5.3.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\unicorn\bootstrap-colorpicker.js" />
     <Content Include="Scripts\unicorn\bootstrap-datepicker.js" />
     <Content Include="Scripts\unicorn\bootstrap.min.js" />
-    <Content Include="Scripts\unicorn\excanvas.min.js" />
-    <Content Include="Scripts\unicorn\fullcalendar.min.js" />
     <Content Include="Scripts\unicorn\jquery.dataTables.min.js" />
-    <Content Include="Scripts\unicorn\jquery.flot.min.js" />
-    <Content Include="Scripts\unicorn\jquery.flot.pie.min.js" />
-    <Content Include="Scripts\unicorn\jquery.flot.resize.min.js" />
-    <Content Include="Scripts\unicorn\jquery.gritter.min.js" />
     <Content Include="Scripts\unicorn\jquery.min.js" />
-    <Content Include="Scripts\unicorn\jquery.min_74e92c4.js" />
     <Content Include="Scripts\unicorn\jquery.peity.min.js" />
     <Content Include="Scripts\unicorn\jquery.ui.custom.js" />
-    <Content Include="Scripts\unicorn\jquery.ui.custom_a3d4650c.js" />
     <Content Include="Scripts\unicorn\jquery.uniform.js" />
     <Content Include="Scripts\unicorn\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\unicorn\jquery.validate.js" />
     <Content Include="Scripts\unicorn\jquery.wizard.js" />
     <Content Include="Scripts\unicorn\select2.min.js" />
-    <Content Include="Scripts\unicorn\unicorn.calendar.js" />
-    <Content Include="Scripts\unicorn\unicorn.charts.js" />
-    <Content Include="Scripts\unicorn\unicorn.chat.js" />
-    <Content Include="Scripts\unicorn\unicorn.dashboard.js" />
-    <Content Include="Scripts\unicorn\unicorn.form_common.js" />
-    <Content Include="Scripts\unicorn\unicorn.form_validation.js" />
-    <Content Include="Scripts\unicorn\unicorn.interface.js" />
     <Content Include="Scripts\unicorn\unicorn.js" />
-    <Content Include="Scripts\unicorn\unicorn.login.js" />
-    <Content Include="Scripts\unicorn\unicorn.tables.js" />
-    <Content Include="Scripts\unicorn\unicorn.wizard.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -392,8 +369,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sms.Common\Sms.Common.csproj">

@@ -4,6 +4,7 @@ using Sms.WebAdmin.Filter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,35 +15,27 @@ namespace Sms.WebAdmin.Controllers
         [HttpPost, PermissionFilterAttribute(false, EnumHepler.ActionPermission.UpImage)]
         public ActionResult Image()
         {
-            var _upfile = Request.Files["filedata"];//文件上传流      
-            if (_upfile != null && _upfile.ContentLength < 2048000)
+            List<string> url = new List<string>();
+            for (int i = 0; i < Request.Files.Count; i++)
             {
-                string ext = System.IO.Path.GetExtension(_upfile.FileName);
-                string[] allowExt = { ".jpg", ".png", ".bmp", ".jpeg" };
-                if (allowExt.Contains(ext))
-                {
-                    Random r = new Random();
-                    string FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + r.Next(100) + ext;
-                    //保存路径
-                    string path = "/Upload/Image/";
-                    //分级目录
-                    string childPath = DateTime.Now.ToString("yyyyMM") + "/";
-                    //创建目录
-                    FileDirectoryHelper.CreateDirectory(Server.MapPath(path + childPath));
-                    //保存图片
-                    string file = string.Format("{0}{1}{2}", path, childPath, FileName);
-                    _upfile.SaveAs(Server.MapPath(file));
-                    return Json(new TipMessage() { Status = true, MsgText = "上传成功", Url = file }, JsonRequestBehavior.DenyGet);
-                }
-                else
-                {
-                    return Json(new TipMessage() { Status = false, MsgText = "请上传格式为jpg,jpeg,bmp,png的图片文件" }, JsonRequestBehavior.DenyGet);
-                }
+                var _upfile = Request.Files[i];//文件上传流      
+                string FileName = Guid.NewGuid().ToString() + System.IO.Path.GetExtension(_upfile.FileName);
+                //保存路径
+                string path = "/Upload/Image/";
+                //分级目录
+                string childPath = DateTime.Now.ToString("yyyyMM") + "/";
+                //创建目录
+                FileDirectoryHelper.CreateDirectory(Server.MapPath(path + childPath));
+                //保存图片
+                string file = string.Format("{0}{1}{2}", path, childPath, FileName);
+                _upfile.SaveAs(Server.MapPath(file));
+                url.Add(file);
             }
-            else
+            if (url.Any())
             {
-                return Json(new TipMessage() { Status = false, MsgText = "文件最大为2M" }, JsonRequestBehavior.DenyGet);
+                return Json(new TipMessage() { Status = true, MsgText = "上传成功", Url = string.Join("$", url) }, JsonRequestBehavior.DenyGet);
             }
+            return Json(new TipMessage() { Status = false, MsgText = "没有要上传的文件" }, JsonRequestBehavior.DenyGet);
         }
 
         public ActionResult DownLoadFile(string path, string content)
