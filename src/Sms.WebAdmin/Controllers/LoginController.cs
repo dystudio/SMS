@@ -9,6 +9,8 @@ using Sms.Common;
 using Sms.WebAdmin.Common;
 using System.Threading.Tasks;
 using System.Xml;
+using Newtonsoft.Json;
+using System.Web.Security;
 
 namespace Sms.WebAdmin.Controllers
 {
@@ -94,12 +96,29 @@ namespace Sms.WebAdmin.Controllers
             }
             if (loginSuccess)
             {
-                //登录信息写入session
-                SessionHelper.Add(ConstFiled.Admin_Session_Name, model, 120);
                 //写登录日志
                 string loginLog = $"登录账号：{model.UserName}，登录IP：{CommonTools.GetIpAddress()}";
                 _repositoryFactory.ISysLog.Add(new Entity.SysLog() { CreateTime = DateTime.Now, Type = (int)EnumHepler.LogType.Login, Remark = loginLog });
                 await _repositoryFactory.SaveChanges();
+
+                //序列化admin对象
+                string accountJson = JsonConvert.SerializeObject(model);
+                //创建用户票据
+                var ticket = new FormsAuthenticationTicket(1, model.UserName, DateTime.Now, DateTime.Now.AddDays(1), false, accountJson);
+                //加密
+                string encryptAccount = FormsAuthentication.Encrypt(ticket);
+                //创建cookie
+                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptAccount)
+                {
+                    HttpOnly = true,
+                    Secure = FormsAuthentication.RequireSSL,
+                    Domain = FormsAuthentication.CookieDomain,
+                    Path = FormsAuthentication.FormsCookiePath
+                };
+                cookie.Expires = DateTime.Now.AddDays(1);
+                //写入Cookie
+                Response.Cookies.Remove(cookie.Name);
+                Response.Cookies.Add(cookie);
                 return new JavaScriptResult() { Script = "login_status=true;location.href='" + Url.Action("Index", "Console") + "'" };
             }
             else
@@ -114,16 +133,23 @@ namespace Sms.WebAdmin.Controllers
         /// <returns></returns>
         public async Task<ActionResult> LoginOut()
         {
-            var model = (AdminLoginModel)SessionHelper.Get(ConstFiled.Admin_Session_Name);
-            //写注销日志
+            HttpCookie cookie = HttpContext.Request.Cookies[FormsAuthentication.FormsCookieName];
+            if (cookie == null || string.IsNullOrEmpty(cookie.Value))
+            {
+                return RedirectToAction("Index");
+            }
+            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
+            AdminLoginModel model = JsonConvert.DeserializeObject<AdminLoginModel>(ticket.UserData);
             if (model != null)
             {
+                //写注销日志                
                 string loginLog = $"退出账号：{model.UserName}，登录IP：{CommonTools.GetIpAddress()}";
                 _repositoryFactory.ISysLog.Add(new Entity.SysLog() { CreateTime = DateTime.Now, Type = (int)EnumHepler.LogType.LoginOut, Remark = loginLog });
                 await _repositoryFactory.SaveChanges();
+
+                cookie.Expires = DateTime.Now.AddDays(-1);
+                Response.Cookies.Set(cookie);
             }
-            //清除session
-            SessionHelper.Remove(ConstFiled.Admin_Session_Name);
             return RedirectToAction("Index");
         }
 

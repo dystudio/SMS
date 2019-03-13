@@ -11,14 +11,14 @@ namespace Sms.WebAdmin.Filter
     {
         public override void OnException(ExceptionContext filterContext)
         {
-            string errorMsg= filterContext.Exception.Message;
+            string errorMsg = filterContext.Exception.Message;
 
             if (filterContext.RequestContext.HttpContext.Request.IsAjaxRequest())
             {
                 var accept = filterContext.RequestContext.HttpContext.Request.AcceptTypes;
                 if (accept.Contains("application/json"))
                 {
-                    filterContext.Result = new JsonResult() { Data = new { Success = false, Msg = errorMsg } };
+                    filterContext.Result = new JsonResult() { Data = new { Status = false, MsgText = errorMsg } };
                 }
                 else
                 {

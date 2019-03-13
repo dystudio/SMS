@@ -8,6 +8,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sms.Entity;
+using System.Web.Security;
+using Newtonsoft.Json;
 
 namespace Sms.WebAdmin.Controllers
 {
@@ -16,12 +18,24 @@ namespace Sms.WebAdmin.Controllers
         [Ninject.Inject]
         protected Sms.IRepository.IRepositoryFactory _repositoryFactory { get; set; }
 
+        protected readonly string tokenName = FormsAuthentication.FormsCookieName;
+
         /// <summary>
         /// 当前登录的用户
         /// </summary>
         protected AdminLoginModel CurrentLoginUser
         {
-            get { return (AdminLoginModel)SessionHelper.Get(ConstFiled.Admin_Session_Name); }
+            get
+            {
+                HttpCookie cookie = HttpContext.Request.Cookies[tokenName];
+                if (cookie == null || string.IsNullOrEmpty(cookie.Value))
+                {
+                    return null;
+                }
+                FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(cookie.Value);
+                AdminLoginModel admin = JsonConvert.DeserializeObject<AdminLoginModel>(ticket.UserData);
+                return admin;
+            }
         }
 
         /// <summary>
@@ -56,7 +70,19 @@ namespace Sms.WebAdmin.Controllers
         /// <param name="remark"></param>
         protected void WriteLog(string content)
         {
-            _repositoryFactory.ISysLog.Add(new Entity.SysLog() { CreateTime = DateTime.Now, Type = (int)EnumHepler.LogType.Oprate, Remark = $"管理员[{CurrentLoginUser.UserName}] — " + content });
+            _repositoryFactory.ISysLog.Add(new Entity.SysLog() { CreateTime = DateTime.Now, Type = (int)EnumHepler.LogType.Oprate, Remark = $"[{CurrentLoginUser.UserName}] — " + content });
+        }
+
+        protected override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            //增加登录token的有效时间
+            HttpCookie token = Request.Cookies[tokenName];
+            if (token != null)
+            {
+                token.Expires = DateTime.Now.AddDays(1);
+                Response.Cookies.Set(token);
+            }
+            base.OnActionExecuted(filterContext);
         }
 
         /// <summary>
@@ -68,7 +94,7 @@ namespace Sms.WebAdmin.Controllers
             var accept = filterContext.HttpContext.Request.AcceptTypes;
             bool isJsonRequest = accept.Contains("application/json");
             //登录验证
-            if (SessionHelper.Get(ConstFiled.Admin_Session_Name) == null)
+            if (CurrentLoginUser == null)
             {
                 if (filterContext.HttpContext.Request.IsAjaxRequest())
                 {

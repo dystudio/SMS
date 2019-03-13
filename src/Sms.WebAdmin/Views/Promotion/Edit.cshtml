@@ -17,8 +17,10 @@
             <div class="widget-box">
                 @using (Ajax.BeginForm("Edit", "Promotion", null, new AjaxOptions() { HttpMethod = "Post", OnBegin = "OnSubmiting", OnComplete = "AjaxCompelement" }, new { @class = "form-horizontal", id = "EditPromotion" }))
                 {
-                    if (Model != null) { @Html.HiddenFor(m => m.Id); }
-                    
+                    if (Model != null)
+                    { @Html.HiddenFor(m => m.Id);
+                    }
+
                     <div class="widget-title">
                         <span class="icon">
                             <i class="icon-pencil"></i>
@@ -92,7 +94,7 @@
                             </li>
                         </ul>
                     </div>
-                }
+                                    }
             </div>
         </div>
     </div>
