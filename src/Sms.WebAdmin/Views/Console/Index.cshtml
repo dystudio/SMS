@@ -54,7 +54,7 @@
             <li class="btn btn-inverse dropdown">
                 <a href="javascript:void(0);" data-toggle="dropdown" class="dropdown-toggle">
                     <i class="icon icon-user"></i>
-                    <span class="text">hi，@(((Sms.Entity.ViewModel.AdminLoginModel)Sms.Common.SessionHelper.Get(Sms.WebAdmin.Common.ConstFiled.Admin_Session_Name)).UserName)</span> &nbsp <b class="caret"></b>
+                    <span class="text">hi，@(((Sms.Entity.ViewModel.AdminLoginModel)ViewBag.CurrentUser).UserName)</span> &nbsp <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
                     <li><a class="" title="" href="javascript:ShowDialog();">个人信息</a> </li>

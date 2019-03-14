@@ -67,6 +67,7 @@ namespace Sms.WebAdmin.Controllers
                 //2.放入缓存
                 CacheHelper.SetCache(ConstFiled.GlobalMenu + CurrentLoginUser.Id, menu, TimeSpan.FromMinutes(10));
             }
+            ViewBag.CurrentUser = CurrentLoginUser;
             return View(menu);
         }
 
