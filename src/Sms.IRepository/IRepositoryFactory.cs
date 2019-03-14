@@ -28,6 +28,7 @@ namespace Sms.IRepository
     	ISystemRole ISystemRole{get;}
     	ISystemRoleRight ISystemRoleRight{get;}
     	ISystemUser ISystemUser{get;}
+    	IWeChatMember IWeChatMember{get;}
         Task<int> SaveChanges();
     }
     
@@ -64,6 +65,10 @@ namespace Sms.IRepository
     }
     
     public partial interface ISystemUser:IBaseRepository<Sms.Entity.SystemUser>
+    {
+    }
+    
+    public partial interface IWeChatMember:IBaseRepository<Sms.Entity.WeChatMember>
     {
     }
     

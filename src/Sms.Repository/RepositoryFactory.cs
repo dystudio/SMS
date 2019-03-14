@@ -84,6 +84,13 @@ namespace Sms.Repository
                return new Sms.Repository.SystemUser();
            }
         }
+            	    public Sms.IRepository.IWeChatMember IWeChatMember
+        {
+           get
+           {
+               return new Sms.Repository.WeChatMember();
+           }
+        }
          public async Task<int> SaveChanges()
          {
              return await Sms.Entity.OperationContext.SaveChanges();
@@ -124,6 +131,10 @@ namespace Sms.Repository
          }
     
          public partial class SystemUser:BaseRepository<Sms.Entity.SystemUser>,Sms.IRepository.ISystemUser
+         {
+         }
+    
+         public partial class WeChatMember:BaseRepository<Sms.Entity.WeChatMember>,Sms.IRepository.IWeChatMember
          {
          }
     

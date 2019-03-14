@@ -102,6 +102,9 @@
     <Compile Include="ViewModel\RoleModuleRight.cs" />
     <Compile Include="ViewModel\SelectItem.cs" />
     <Compile Include="ViewModel\TipMessage.cs" />
+    <Compile Include="WeChatMember.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="SmsEntity.edmx">

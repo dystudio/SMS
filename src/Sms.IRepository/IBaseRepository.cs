@@ -105,5 +105,9 @@ namespace Sms.IRepository
         /// <param name="paras"></param>
         /// <returns></returns>
         int ExcuteNonQuery(string strSql, params System.Data.SqlClient.SqlParameter[] paras);
+
+        bool Any(Expression<Func<TModel, bool>> where);
+
+        Task<bool> AnyAsync(Expression<Func<TModel, bool>> where);
     }
 }

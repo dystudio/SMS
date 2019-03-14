@@ -42,6 +42,25 @@ namespace Sms.Common
         }
 
         /// <summary>
+        /// 设置缓存过期时间
+        /// </summary>
+        /// <param name="CacheKey"></param>
+        /// <param name="Timeout"></param>
+        /// <returns></returns>
+        public static bool KeyExpire(string CacheKey, TimeSpan Timeout)
+        {
+            System.Web.Caching.Cache objCache = HttpRuntime.Cache;
+            var value = objCache.Get(CacheKey);
+            if (value == null)
+            {
+                return false;
+            }
+            objCache.Remove(CacheKey);
+            objCache.Insert(CacheKey, value, null, DateTime.MaxValue, Timeout, System.Web.Caching.CacheItemPriority.NotRemovable, null);
+            return true;
+        }
+
+        /// <summary>
         /// 设置数据缓存
         /// </summary>
         public static void SetCache(string CacheKey, object objObject, DateTime absoluteExpiration, TimeSpan slidingExpiration)

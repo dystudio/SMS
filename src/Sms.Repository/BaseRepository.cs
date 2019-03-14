@@ -211,6 +211,15 @@ namespace Sms.Repository
             return await dbSet.CountAsync(where);
         }
 
+        public bool Any(Expression<Func<TModel, bool>> where)
+        {
+            return dbSet.Any(where);
+        }
+        public async Task<bool> AnyAsync(Expression<Func<TModel, bool>> where)
+        {
+            return await dbSet.AnyAsync(where);
+        }
+
         #region 根据 条件 查询 和 排序
         /// <summary>
         /// 根据 条件 查询 和 排序
