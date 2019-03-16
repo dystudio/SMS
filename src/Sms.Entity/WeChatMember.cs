@@ -25,5 +25,6 @@ namespace Sms.Entity
         public string UnionId { get; set; }
         public int Status { get; set; }
         public System.DateTime CreateTime { get; set; }
+        public string SessionKey { get; set; }
     }
 }

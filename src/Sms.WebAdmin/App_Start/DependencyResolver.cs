@@ -55,7 +55,7 @@ namespace Sms.WebAdmin.App_Start
 
 
 
-    public class WebApiDependencyResolver : WebApiDependencyScope, System.Web.Http.Dependencies.IDependencyResolver
+    public class WebApiDependencyResolver : WebApiDependencyScope, IDependencyResolver
     {
         private readonly IKernel _kernel;
 

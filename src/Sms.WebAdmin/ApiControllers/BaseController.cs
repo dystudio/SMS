@@ -22,10 +22,11 @@ namespace Sms.WebAdmin.ApiControllers
             get
             {
                 string token = Request.Headers.FirstOrDefault(x => x.Key == "token").Value.FirstOrDefault();
+                token = SecurityHelper.DecryptDES(token, Common.ConstFiled.OpenIdEncryptKey);
                 var user = CacheHelper.GetCache(token) as WeChatMember;
                 if (user == null)
                 {
-                    user = _repositoryFactory.IWeChatMember.Single(x => x.OpenId == token && x.Status == 1);
+                    user = _repositoryFactory.IWeChatMember.Single(x => x.OpenId == token);
                 }
                 return user;
             }
@@ -89,11 +90,12 @@ namespace Sms.WebAdmin.ApiControllers
                 }
                 else
                 {
+                    token = SecurityHelper.DecryptDES(token, Common.ConstFiled.OpenIdEncryptKey);
                     //token合法验证
                     var sign = CacheHelper.GetCache(token);
                     if (sign == null)
                     {
-                        var user = _repositoryFactory.IWeChatMember.Single(x => x.OpenId == token && x.Status == 1);
+                        var user = _repositoryFactory.IWeChatMember.Single(x => x.OpenId == token);
                         if (user == null)
                         {
                             result = new ApiResponseMessage(ResultStatus.UnAuthorize, "未注册用户");

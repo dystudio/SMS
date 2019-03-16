@@ -48,45 +48,39 @@ namespace Sms.WebAdmin.Models
         ServiceError = -2,
 
         /// <summary>
-        /// 非法请求
-        /// </summary>
-        [Description("非法请求")]
-        Illegal = -1,
-
-        /// <summary>
         /// 请求失败
         /// </summary>
         [Description("请求失败")]
-        Failed = 0,
+        Failed = -1,
 
         /// <summary>
         /// 请求成功
         /// </summary>
         [Description("请求成功")]
-        Success = 1,
+        Success = 0,
 
         /// <summary>
         /// 登录失败
         /// </summary>
         [Description("登录失败")]
-        UnAuthorize = 2,
+        UnAuthorize = 1,
 
         /// <summary>
         /// 参数异常
         /// </summary>
         [Description("参数异常")]
-        ParamError = 3,
+        ParamError = 2,
 
         /// <summary>
         /// 数据异常
         /// </summary>
         [Description("数据异常")]
-        DataException = 4,
+        DataException = 3,
 
         /// <summary>
         /// 验证失败
         /// </summary>
         [Description("验证失败")]
-        ValidateError = 5
+        ValidateError = 4
     }
 }

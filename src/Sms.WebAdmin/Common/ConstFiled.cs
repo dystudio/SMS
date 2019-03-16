@@ -21,5 +21,10 @@ namespace Sms.WebAdmin.Common
         /// 菜单的缓存key
         /// </summary>
         public static readonly string GlobalMenu = "MenuCache";
+
+        /// <summary>
+        /// openid加密key
+        /// </summary>
+        public const string OpenIdEncryptKey = "qwerasdf";
     }
 }

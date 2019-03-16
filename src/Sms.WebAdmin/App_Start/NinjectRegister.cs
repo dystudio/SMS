@@ -7,6 +7,7 @@ using Sms.IRepository;
 using Sms.Repository;
 using System.Web.Http;
 using System.Web.Mvc;
+using System.Web.Http.Filters;
 
 namespace Sms.WebAdmin.App_Start
 {
@@ -20,6 +21,12 @@ namespace Sms.WebAdmin.App_Start
 
             //service binding
             kernel.Bind<IRepositoryFactory>().To<RepositoryFactory>();
+
+            //为ActionFilter注册服务
+            var providers = config.Services.GetFilterProviders().ToList();
+            var defaultprovider = providers.Single(i => i is ActionDescriptorFilterProvider);
+            config.Services.Remove(typeof(System.Web.Http.Filters.IFilterProvider), defaultprovider);
+            config.Services.Add(typeof(System.Web.Http.Filters.IFilterProvider), new WebApiActionFilterProvider(kernel));
 
             //mvc inject
             DependencyResolver.SetResolver(new MvcDependencyResolver(kernel));
