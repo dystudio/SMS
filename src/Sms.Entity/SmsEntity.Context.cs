@@ -35,5 +35,6 @@ namespace Sms.Entity
         public virtual DbSet<SystemRoleRight> SystemRoleRight { get; set; }
         public virtual DbSet<SystemUser> SystemUser { get; set; }
         public virtual DbSet<WeChatMember> WeChatMember { get; set; }
+        public virtual DbSet<WechatMemberPointsLog> WechatMemberPointsLog { get; set; }
     }
 }

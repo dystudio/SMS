@@ -1,0 +1,98 @@
+﻿@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.WeChatMember>
+
+<div class="widget-content nopadding">
+    <table class="table table-bordered table-striped with-check">
+        <thead>
+            <tr>
+                <th style="width: 13%">openid</th>
+                <th>会员等级</th>
+                <th>微信昵称</th>
+                <th>手机号</th>
+                <th>性别</th>
+                <th>地区</th>
+                <th>可用积分</th>
+                <th>历史积分</th>
+                <th>状态</th>
+                <th>创建时间</th>
+                <th>最后更新时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="center" style="width: 13%;">  @item.OpenId </td>
+                            <td class="center">@(EnumHepler.GetEnumDescription((EnumHepler.MemberLevel)item.Rank))</td>
+                            <td class="center">
+                                <img src="@item.AvatarUrl" width="50" height="50" />
+                                @item.NickName
+                            </td>
+                            <td class="center">@item.Mobile</td>
+                            <td class="center">@(item.Gender == 1 ? "男" : (item.Gender == 2 ? "女" : "未知"))</td>
+                            <td class="center">@item.Country @item.Province @item.City</td>
+                            <td class="center">@item.AvailablePoints</td>
+                            <td class="center">@item.TotalPoints</td>
+                            <td class="center">
+                                @Html.Raw(item.Status == (int)EnumHepler.MemberCardStatus.Available ? "<i class=\"icon-ok tip-bottom\" title=\"有效\"></i>" : (item.Status == (int)EnumHepler.MemberCardStatus.Locked ? "<i class=\"icon-remove tip-bottom\" title=\"已锁定\"></i>" : ""))
+                            </td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.LastUpdateTime)</td>
+                            <td class="center">
+                                @*<a href="@Url.Action("Edit", new { no = item.CardNo })" class="btn btn-mini tip-bottom" data-original-title="编辑"><i class="icon-pencil"></i></a>*@
+                                @if (item.Status == (int)EnumHepler.MemberCardStatus.Available)
+                                {
+                                    <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="禁用" onclick="SetStatus('@item.OpenId',@((int)EnumHepler.MemberCardStatus.Locked));"><i class="icon-lock icon-white"></i></a>
+                                }
+                                else if (item.Status == (int)EnumHepler.MemberCardStatus.Locked)
+                                {
+                                    <a href="javascript:" class="btn btn-mini btn-success tip-bottom" title="启用" onclick="SetStatus('@item.OpenId',@((int)EnumHepler.MemberCardStatus.Available));"><i class="icon-check icon-white"></i></a>
+                                }
+                                @*<a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置消费密码" onclick="SetPassword('@item.CardNo',1)"><i class="icon-cog"></i></a>
+                                    <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="MemberDelete(this,'@item.CardNo');"><i class="icon-trash icon-white"></i></a>*@
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr style="">
+                        <td colspan="12">
+                            <div class="list-none-data">  -- 暂无记录 -- </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="center">
+    <div class="dataTables_paginate paging_bootstrap pagination" style="height:35px">
+        <div style="float:left;margin: 6px 15px;font-family: fantasy">共 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex / @Model.TotalPageCount 页</div>
+        @Ajax.Pager(Model, new PagerOptions
+        {
+            PageIndexParameterName = "page",
+            ContainerTagName = "ul",
+            DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+            PagerItemTemplate = "<li>{0}</li>",
+            CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+            PrevPageText = "上一页",
+            NextPageText = "下一页",
+            ShowFirstLast = false
+        }, new MvcAjaxOptions
+        {
+            UpdateTargetId = "pager_content",
+            DataFormId= "searchForm",
+            LoadingElementId = "pager_loading",
+            OnBegin = "$('#pager_content').hide()",
+            OnComplete = "$('#pager_content').show()"
+        })
+    </div>
+</div>

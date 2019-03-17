@@ -15,7 +15,7 @@ namespace Sms.WebAdmin.Common
         /// <summary>
         /// 每页显示数据条数
         /// </summary>
-        public static readonly int PageSize = 20;
+        public static readonly int PageSize = 1;
 
         /// <summary>
         /// 菜单的缓存key

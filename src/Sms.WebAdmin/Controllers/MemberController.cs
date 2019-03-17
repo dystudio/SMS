@@ -23,16 +23,22 @@ namespace Sms.WebAdmin.Controllers
         /// </summary>
         /// <returns></returns>
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.View)]
-        public ActionResult Index(int? type, string keyword = "")
+        public ActionResult Index(int? level, string keyword = "")
         {
-            var list = _repositoryFactory.IMemberCard.Where(c => true);
+            var list = _repositoryFactory.IWeChatMember.Where(c => true);
             //搜索关键字过滤
+            if (level.HasValue)
+            {
+                list = list.Where(c => c.Rank == level.Value);
+            }
             if (!string.IsNullOrEmpty(keyword))
             {
-                list = list.Where(c => c.CardNo.Contains(keyword) || c.Mobile.Contains(keyword) || c.Name.Contains(keyword));
+                list = list.Where(c => c.Mobile.Contains(keyword) || c.NickName.Contains(keyword));
             }
             list = list.OrderByDescending(c => c.CreateTime);
             var pagerList = list.ToPagedList(PageIndex, ConstFiled.PageSize);
+            if (Request.IsAjaxRequest())
+                return PartialView("_PartialMemberList", pagerList);
             return View(pagerList);
         }
 
@@ -197,12 +203,12 @@ namespace Sms.WebAdmin.Controllers
         [PermissionFilterAttribute(false, EnumHepler.ActionPermission.ChangeStatus)]
         public async Task<ActionResult> UpdateStatus(string id, int status)
         {
-            var entity = _repositoryFactory.IMemberCard.Single(m => m.CardNo == id);
+            var entity = _repositoryFactory.IWeChatMember.Single(m => m.OpenId == id);
             if (entity != null)
             {
                 entity.Status = status;
-                _repositoryFactory.IMemberCard.Modify(entity, "Status");
-                WriteLog($"变更了会员卡【{id}】的状态");
+                _repositoryFactory.IWeChatMember.Modify(entity, "Status");
+                WriteLog($"变更了会员【{id}】的状态");
                 if (await _repositoryFactory.SaveChanges() > 0)
                 {
                     return Json(new TipMessage() { Status = true, MsgText = "操作成功", Url = Url.Action("Index") }, JsonRequestBehavior.DenyGet);

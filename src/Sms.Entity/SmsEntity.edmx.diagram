@@ -18,6 +18,7 @@
         <AssociationConnector Association="SmsModel.FK_SystemRoleRight_SystemModule" ManuallyRouted="false" />
         <AssociationConnector Association="SmsModel.FK_SystemRoleRight_SystemRole" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SmsModel.WeChatMember" Width="1.5" PointX="8.375" PointY="9.75" />
+        <EntityTypeShape EntityType="SmsModel.WechatMemberPointsLog" Width="1.5" PointX="10.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -22,6 +22,36 @@ namespace Sms.Common
         }
 
         /// <summary>
+        /// 会员等级
+        /// </summary>
+        public enum MemberLevel
+        {
+            /// <summary>
+            /// 普通会员
+            /// </summary>
+            [Description("普通会员")]
+            One = 1,
+
+            /// <summary>
+            /// 白银会员
+            /// </summary>
+            [Description("白银会员")]
+            Two = 2,
+
+            /// <summary>
+            /// 黄金会员
+            /// </summary>
+            [Description("黄金会员")]
+            Three = 3,
+
+            /// <summary>
+            /// 钻石会员
+            /// </summary>
+            [Description("钻石会员")]
+            Four = 4
+        }
+
+        /// <summary>
         /// 促销类型
         /// </summary>
         public enum PromotionType

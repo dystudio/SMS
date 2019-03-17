@@ -26,5 +26,9 @@ namespace Sms.Entity
         public int Status { get; set; }
         public System.DateTime CreateTime { get; set; }
         public string SessionKey { get; set; }
+        public int Rank { get; set; }
+        public int AvailablePoints { get; set; }
+        public int TotalPoints { get; set; }
+        public Nullable<System.DateTime> LastUpdateTime { get; set; }
     }
 }

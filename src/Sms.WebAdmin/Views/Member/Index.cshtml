@@ -1,12 +1,11 @@
 ﻿@using Webdiyer.WebControls.Mvc
 @using Sms.Common
 
-@model  PagedList<Sms.Entity.MemberCard>
+@model  PagedList<Sms.Entity.WeChatMember>
 
 <div id="breadcrumb">
-    <a href="@Url.Action("Home", "Console")" title="首页" class="tip-bottom"><i class="icon-home"></i>首页</a>
     <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
-    <a href="javascript:void(0);" class="current">会员卡信息</a>
+    <a href="javascript:void(0);" class="current">会员信息</a>
 </div>
 
 <div class="container-fluid">
@@ -15,107 +14,43 @@
             <span class="icon">
                 <a class="icon-list"></a>
             </span>
-            <h5>会员卡列表</h5>
-            <h5><a href="@Url.Action("Edit")" class="">添加</a></h5>
+            <h5>微信会员列表</h5>
+            @*<h5><a href="@Url.Action("Edit")" class="">添加</a></h5>*@
         </div>
         <div class="widget-content">
-            @using (Html.BeginForm("Index", "Member", new { page = 1 }, FormMethod.Get))
+            @*@using (Html.BeginForm("Index", "Member", new { page = 1 }, FormMethod.Get, new { @class = "form-horizontal" }))
             {
-                <p>
-                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "会员卡号、手机号、姓名", style = "margin:0px 10px" })
-                    <input type="submit" class="btn" value="查询" onclick="if ($('#keyword').val() == '' ) { return false; }" />
-                    &nbsp;
-                    <button class="btn  btn-primary" title="" onclick="Export();return false;"><i class="icon-download-alt  icon-white"></i>  导出</button>
-                </p>
+                <div>
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "昵称、手机号" })
+                    @Html.DropDownList("level", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.MemberLevel)), "Value", "Key", null), "全部等级", new { @id = "level", style = "width:120px" })
+                    <div class="actions" style="display:inline">
+                        <input type="submit" class="btn" value="查询" />
+                        <button class="btn  btn-primary" title="" onclick="Export();return false;"><i class="icon-download-alt  icon-white"></i>  导出</button>
+                    </div>
+
+                </div>
+            }*@
+            @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "page", "" } }, new AjaxOptions { UpdateTargetId = "pager_content", HttpMethod = "Get", InsertionMode = InsertionMode.Replace, OnBegin = "$('#pager_loading').show()", OnComplete = "$('#pager_loading').hide()" }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "form-horizontal" } }))
+            {
+                <div>
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "昵称、手机号" })
+                    @Html.DropDownList("level", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.MemberLevel)), "Value", "Key", null), "全部等级", new { @id = "level", style = "width:120px" })
+                    <div class="actions" style="display:inline">
+                        <input type="submit" class="btn"  value="搜索(S)" accesskey="S" />
+                        <button class="btn  btn-primary" title="" onclick="Export();return false;"><i class="icon-download-alt  icon-white"></i>  导出</button>
+                    </div>
+
+                </div>
             }
         </div>
-        <div class="widget-content nopadding">
-            <table class="table table-bordered table-striped with-check">
-                <thead>
-                    <tr>
-                        <th style="width: 13%">会员卡号</th>
-                        <th>真实姓名</th>
-                        <th>手机号</th>
-                        <th>性别</th>
-                        <th>账户余额</th>
-                        <th>累计充值</th>
-                        <th>累计赠送</th>
-                        <th>累计折扣</th>
-                        <th>创建时间</th>
-                        <th>状态</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        if (Model.Count > 0)
-                        {
-                            foreach (var item in Model)
-                            {
-                    <tr>
-                        <td class="center" style="width: 13%;font-size:16px;font-weight:600">
-                            @item.CardNo
-                        </td>
-                        <td class="center">@item.Name</td>
-                        <td class="center">@item.Mobile</td>
-                        <td class="center">@item.Sex</td>
-                        <td class="center" style="font-size:16px;font-weight:600;color:#08c">@item.Banlance</td>
-                        <td class="center">@item.TotalMoney</td>
-                        <td class="center">@item.TotalPresent</td>
-                        <td class="center">@item.TotalDiscount</td>
-                        <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
-                        <td class="center">
-                            @Html.Raw(item.Status == (int)EnumHepler.UserStatus.Available ? "<i class=\"icon-ok tip-bottom\" title=\"有效\"></i>" : (item.Status == (int)EnumHepler.UserStatus.Lock ? "<i class=\"icon-remove tip-bottom\" title=\"已锁定\"></i>" : ""))
-                        </td>
-                        <td class="center">
-                            <a href="@Url.Action("Edit", new { no = item.CardNo })" class="btn btn-mini tip-bottom" data-original-title="编辑"><i class="icon-pencil"></i></a>
-                            @if (item.Status == (int)EnumHepler.UserStatus.Available)
-        {
-                    <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="禁用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Locked));"><i class="icon-lock icon-white"></i></a>
-}
-else if (item.Status == (int)EnumHepler.UserStatus.Lock)
-{
-                    <a href="javascript:" class="btn btn-mini btn-success tip-bottom" title="启用" onclick="SetStatus('@item.CardNo',@((int)EnumHepler.MemberCardStatus.Available));"><i class="icon-check icon-white"></i></a>
-}
-                            <a href="javascript:" class="btn btn-mini tip-bottom" data-original-title="重置消费密码" onclick="SetPassword('@item.CardNo',1)"><i class="icon-cog"></i></a>
-                            <a href="javascript:" class="btn btn-mini btn-danger tip-bottom" title="删除" onclick="MemberDelete(this,'@item.CardNo');"><i class="icon-trash icon-white"></i></a>
-                        </td>
-                    </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr style="">
-                                <td colspan="11">
-                                    <div class="list-none-data">  -- 暂无记录 -- </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
+        <div id="pager_loading" style="display:none;margin:15px;text-align:center"><img src="~/Content/img/spinner.gif" /></div>
+        <div id="pager_content">
+            @Html.Partial("_PartialMemberList", Model)
         </div>
-        @if (Model.Count >= Sms.WebAdmin.Common.ConstFiled.PageSize)
-        {
-            <div class="center">
-                <div class="dataTables_paginate paging_bootstrap pagination">
-                    @Html.Pager(Model, new PagerOptions
-               {
-                   PageIndexParameterName = "page",
-                   ContainerTagName = "ul",
-                   DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
-                   PagerItemTemplate = "<li>{0}</li>",
-                   CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
-                   PrevPageText = "上一页",
-                   NextPageText = "下一页",
-                   ShowFirstLast = false
-               })
-                </div>
-            </div>
-        }
     </div>
 </div>
 @section foot{
+    @{Html.RegisterMvcPagerScriptResource();}
     <script type="text/javascript">
         //更改状态
         function SetStatus(id, status) {
@@ -127,7 +62,7 @@ else if (item.Status == (int)EnumHepler.UserStatus.Lock)
                 }, "json");
             }
         }
-        //删除
+        @*//删除
         function MemberDelete(obj,id) {
             if (confirm('确认要删除该会员卡吗？')) {
                 AjaxFunction("post", "@Url.Action("MemberDelete")", { "id": id }, function (data) {
@@ -143,11 +78,11 @@ else if (item.Status == (int)EnumHepler.UserStatus.Lock)
                     show_message(data.Status, data.MsgText, data.Url);
                 });
             }
-        }
+        }*@
         //导出
         function Export() {
             if (confirm('确认要按搜索条件导出数据吗？')) {
-                AjaxFunction('POST', '@Url.Action("ExportMember")', {"keyword": $("#keyword").val() }, function (result) { show_message(true, result.MsgText, result.Url); });
+                AjaxFunction('POST', '@Url.Action("ExportMember")', { "keyword": $("#keyword").val() }, function (result) { show_message(true, result.MsgText, result.Url); });
             }
         }
     </script>

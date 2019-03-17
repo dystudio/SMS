@@ -105,6 +105,9 @@
     <Compile Include="WeChatMember.cs">
       <DependentUpon>SmsEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="WechatMemberPointsLog.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="SmsEntity.edmx">

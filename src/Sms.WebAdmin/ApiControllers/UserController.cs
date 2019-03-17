@@ -79,13 +79,14 @@ namespace Sms.WebAdmin.ApiControllers
             user.Province = info.province;
             if (modify)
             {
-                _repositoryFactory.IWeChatMember.Modify(user, "NickName", "AvatarUrl", "Gender", "Country", "Province", "City");
+                user.LastUpdateTime = DateTime.Now;
+                _repositoryFactory.IWeChatMember.Modify(user, "NickName", "AvatarUrl", "Gender", "Country", "Province", "City", "LastUpdateTime");
             }
             else
             {
                 user.OpenId = openid;
                 user.CreateTime = DateTime.Now;
-                user.Status = 1;
+                user.Status = (int)EnumHepler.MemberCardStatus.Available;
                 _repositoryFactory.IWeChatMember.Add(user);
             }
             _repositoryFactory.SaveChanges();

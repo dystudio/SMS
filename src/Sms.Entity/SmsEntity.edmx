@@ -132,9 +132,27 @@
           <Property Name="Province" Type="nvarchar" MaxLength="50" />
           <Property Name="City" Type="nvarchar" MaxLength="50" />
           <Property Name="UnionId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Rank" Type="int" Nullable="false" />
+          <Property Name="AvailablePoints" Type="int" Nullable="false" />
+          <Property Name="TotalPoints" Type="int" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
           <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="LastUpdateTime" Type="datetime" />
           <Property Name="SessionKey" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="WechatMemberPointsLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="OpenId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="BillCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BeforeValue" Type="int" Nullable="false" />
+          <Property Name="ChangeValue" Type="int" Nullable="false" />
+          <Property Name="AfterValue" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
         </EntityType>
         <Association Name="FK_SystemModuleRight_SystemModule">
           <End Role="SystemModule" Type="Self.SystemModule" Multiplicity="1" />
@@ -183,6 +201,7 @@
           <EntitySet Name="SystemRoleRight" EntityType="Self.SystemRoleRight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SystemUser" EntityType="Self.SystemUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WeChatMember" EntityType="Self.WeChatMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WechatMemberPointsLog" EntityType="Self.WechatMemberPointsLog" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_SystemModuleRight_SystemModule" Association="Self.FK_SystemModuleRight_SystemModule">
             <End Role="SystemModule" EntitySet="SystemModule" />
             <End Role="SystemModuleRight" EntitySet="SystemModuleRight" />
@@ -379,6 +398,7 @@
             <End Role="SystemRoleRight" EntitySet="SystemRoleRight" />
           </AssociationSet>
           <EntitySet Name="WeChatMember" EntityType="SmsModel.WeChatMember" />
+          <EntitySet Name="WechatMemberPointsLog" EntityType="SmsModel.WechatMemberPointsLog" />
         </EntityContainer>
         <EntityType Name="WeChatMember">
           <Key>
@@ -396,6 +416,24 @@
           <Property Name="Status" Type="Int32" Nullable="false" />
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="SessionKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Rank" Type="Int32" Nullable="false" />
+          <Property Name="AvailablePoints" Type="Int32" Nullable="false" />
+          <Property Name="TotalPoints" Type="Int32" Nullable="false" />
+          <Property Name="LastUpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="WechatMemberPointsLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OpenId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="BillCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BeforeValue" Type="Int32" Nullable="false" />
+          <Property Name="ChangeValue" Type="Int32" Nullable="false" />
+          <Property Name="AfterValue" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -529,6 +567,10 @@
           <EntitySetMapping Name="WeChatMember">
             <EntityTypeMapping TypeName="SmsModel.WeChatMember">
               <MappingFragment StoreEntitySet="WeChatMember">
+                <ScalarProperty Name="LastUpdateTime" ColumnName="LastUpdateTime" />
+                <ScalarProperty Name="TotalPoints" ColumnName="TotalPoints" />
+                <ScalarProperty Name="AvailablePoints" ColumnName="AvailablePoints" />
+                <ScalarProperty Name="Rank" ColumnName="Rank" />
                 <ScalarProperty Name="SessionKey" ColumnName="SessionKey" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -541,6 +583,21 @@
                 <ScalarProperty Name="Mobile" ColumnName="Mobile" />
                 <ScalarProperty Name="NickName" ColumnName="NickName" />
                 <ScalarProperty Name="OpenId" ColumnName="OpenId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WechatMemberPointsLog">
+            <EntityTypeMapping TypeName="SmsModel.WechatMemberPointsLog">
+              <MappingFragment StoreEntitySet="WechatMemberPointsLog">
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="AfterValue" ColumnName="AfterValue" />
+                <ScalarProperty Name="ChangeValue" ColumnName="ChangeValue" />
+                <ScalarProperty Name="BeforeValue" ColumnName="BeforeValue" />
+                <ScalarProperty Name="BillCode" ColumnName="BillCode" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="OpenId" ColumnName="OpenId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
