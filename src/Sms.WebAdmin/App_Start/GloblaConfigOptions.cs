@@ -15,10 +15,17 @@ namespace Sms.WebAdmin
             Instance = new GloblaConfigOptions();
             Instance.MiniProgramAppId = ConfigurationManager.AppSettings["MiniProgramAppId"];
             Instance.MiniProgramAppSecret = ConfigurationManager.AppSettings["MiniProgramAppSecret"];
+            Instance.WxPayMerchantId = ConfigurationManager.AppSettings["WxPayMerchantId"];
+            Instance.WxPayMerchantKey = ConfigurationManager.AppSettings["WxPayMerchantKey"];
         }
 
         public string MiniProgramAppId { get; set; }
 
         public string MiniProgramAppSecret { get; set; }
+
+
+        public string WxPayMerchantId { get; set; }
+
+        public string WxPayMerchantKey { get; set; }
     }
 }
