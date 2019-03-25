@@ -30,15 +30,26 @@ namespace Sms.WebAdmin.ApiControllers
         public HttpResponseMessage CreatePayment(string orderCode)
         {
             LogHelper.Payment(orderCode, "准备请求微信支付接口...");
+            var orderEntity = _repositoryFactory.IOrders.Single(x => x.OrderCode == orderCode);
+            if (orderEntity == null)
+            {
+                LogHelper.Payment(orderCode, "订单不存在");
+                return ApiResponse(ResultStatus.ParamError, "订单不存在");
+            }
+            if (orderEntity.OrderStatus != (int)EnumHepler.OrderStatus.Created || orderEntity.PayStatus != (int)EnumHepler.OrderPayStatus.Unpay)
+            {
+                LogHelper.Payment(orderCode, "订单非待支付状态");
+                return ApiResponse(ResultStatus.ParamError, "订单非待支付状态");
+            }
             TenPayV3Info TenPayV3Info = new TenPayV3Info(appId, appSecrect, wxmchId, wxmchKey, notifyUrl, notifyUrl);
             TenPayV3Info.TenPayV3Notify = notifyUrl;
             //创建支付应答对象
             //RequestHandler packageReqHandler = new RequestHandler(null);
-            //var sp_billno = DateTime.Now.ToString("HHmmss") + TenPayV3Util.BuildRandomStr(26);//最多32位
+            var sp_billno = DateTime.Today.ToString("yyMMdd") + TenPayV3Util.BuildDailyRandomStr(4);//最多32位
             var nonceStr = TenPayV3Util.GetNoncestr();
             string clientIp = CommonTools.GetIpAddress();
             //创建请求统一订单接口参数
-            var xmlDataInfo = new TenPayV3UnifiedorderRequestData(TenPayV3Info.AppId, TenPayV3Info.MchId, "支付标题", "订单号", (int)(25.36 * 100), clientIp, TenPayV3Info.TenPayV3Notify, Senparc.Weixin.TenPay.TenPayV3Type.JSAPI, "openid", TenPayV3Info.Key, nonceStr);
+            var xmlDataInfo = new TenPayV3UnifiedorderRequestData(TenPayV3Info.AppId, TenPayV3Info.MchId, "订单支付", orderCode, (int)(orderEntity.ActualPrice * 100), clientIp, TenPayV3Info.TenPayV3Notify, Senparc.Weixin.TenPay.TenPayV3Type.JSAPI, orderEntity.OpenId, TenPayV3Info.Key, nonceStr);
 
             //返回给微信的请求
             //RequestHandler res = new RequestHandler(null);
@@ -59,14 +70,14 @@ namespace Sms.WebAdmin.ApiControllers
                         string paySign = SecurityHelper.MD5($"appId={TenPayV3Info.AppId}&nonceStr={nonceStr}&package=prepay_id={result.prepay_id}&signType=MD5&timeStamp={rtimeStamp}&key={TenPayV3Info.Key}").ToUpper();
                         //返回前端唤起微信支付收银台的参数
                         var detail = new { timeStamp = rtimeStamp, nonceStr = nonceStr, package = $"prepay_id={result.prepay_id}", signType = "MD5", paySign = paySign };
-                        return ApiResponse(new ApiResponseMessage() { Message = "下单成功", Status = ResultStatus.Success, Data = detail });
+                        return ApiResponse(ResultStatus.Success, "下单成功", detail);
                     }
                     else
                     {
                         LogHelper.Payment(orderCode, $"请求微信支付失败，err_code：{result.err_code}，err_code_des：{result.err_code_des}");
                     }
                 }
-                return ApiResponse(new ApiResponseMessage() { Message = result.return_msg, Status = ResultStatus.Failed });
+                return ApiResponse(ResultStatus.Failed, result.return_msg);
             }
             catch (Exception ex)
             {
@@ -74,7 +85,7 @@ namespace Sms.WebAdmin.ApiControllers
                 //res.SetParameter("return_msg", "统一下单失败");
                 LogHelper.Payment(orderCode, $"创建微信支付异常：{ex.Message}");
                 LogHelper.Exception(ex);
-                return ApiResponse(new ApiResponseMessage() { Message = "创建微信支付请求失败，请联系管理员！", Status = ResultStatus.Failed });
+                return ApiResponse(ResultStatus.Failed, "创建微信支付请求失败，请联系管理员！");
             }
 
         }
@@ -104,7 +115,6 @@ namespace Sms.WebAdmin.ApiControllers
                     //return_code是通信标识，非交易标识，交易是否成功需要查看result_code来判断
                     if (resHandler.GetParameter("result_code") == "SUCCESS")
                     {
-
                         string total_fee = resHandler.GetParameter("total_fee");//订单金额
                         string out_trade_no = resHandler.GetParameter("out_trade_no");//商户订单号
                         string transaction_id = resHandler.GetParameter("transaction_id");//微信支付订单号
@@ -112,10 +122,25 @@ namespace Sms.WebAdmin.ApiControllers
                         string openid = resHandler.GetParameter("openid");
                         LogHelper.Payment(reqKey, $"微信支付成功，商户订单号：{out_trade_no}，支付金额：{total_fee}，支付流水号：{transaction_id}，openid：{openid}");
                         //1.判断订单是否存在 2.判断订单支付状态 3.插入修改数据等
-                        LogHelper.Payment(reqKey, $"查找订单失败，商户订单号：{out_trade_no}");
-                        LogHelper.Payment(reqKey, $"找到订单，当前支付状态为，商户订单号：{out_trade_no}");
-                        LogHelper.Payment(reqKey, $"更新订单支付状态为，商户订单号：{out_trade_no}");
-                        DateTime dt = DateTime.ParseExact(time_end, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault);
+                        var orderEntity = _repositoryFactory.IOrders.Single(x => x.OrderCode == out_trade_no);
+                        if (orderEntity == null)
+                        {
+                            LogHelper.Payment(reqKey, $"查找订单失败，商户订单号：{out_trade_no}");
+                        }
+                        else if (orderEntity.OrderStatus != (int)EnumHepler.OrderStatus.Created || orderEntity.PayStatus != (int)EnumHepler.OrderPayStatus.Unpay)
+                        {
+                            LogHelper.Payment(reqKey, $"订单非待支付状态，当前状态为{orderEntity.OrderStatus}，商户订单号：{out_trade_no}");
+                        }
+                        else
+                        {
+                            LogHelper.Payment(reqKey, $"更新订单支付状态为已支付待发货，商户订单号：{out_trade_no}");
+                            DateTime payTime = DateTime.ParseExact(time_end, "yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.NoCurrentDateDefault);
+                            //更新订单状态
+                            _repositoryFactory.IOrders.ModifyBy(x => x.OrderCode == out_trade_no,
+                                new string[] { "OrderStatus", "PayStatus", "PayTime", "PayMode" },
+                                new object[] { (int)EnumHepler.OrderStatus.WaitSendGoods, (int)EnumHepler.OrderPayStatus.Paied, payTime, (int)EnumHepler.OrderPayMode.WechatPay });
+                            _repositoryFactory.SaveChanges();
+                        }
                     }
                     else
                     {

@@ -91,6 +91,62 @@ namespace Sms.Repository
                return new Sms.Repository.WeChatMember();
            }
         }
+            	    public Sms.IRepository.IWechatMemberPointsLog IWechatMemberPointsLog
+        {
+           get
+           {
+               return new Sms.Repository.WechatMemberPointsLog();
+           }
+        }
+            	    public Sms.IRepository.IItemBrand IItemBrand
+        {
+           get
+           {
+               return new Sms.Repository.ItemBrand();
+           }
+        }
+            	    public Sms.IRepository.IItemCategory IItemCategory
+        {
+           get
+           {
+               return new Sms.Repository.ItemCategory();
+           }
+        }
+            	    public Sms.IRepository.IItemInfo IItemInfo
+        {
+           get
+           {
+               return new Sms.Repository.ItemInfo();
+           }
+        }
+            	    public Sms.IRepository.IItemSku IItemSku
+        {
+           get
+           {
+               return new Sms.Repository.ItemSku();
+           }
+        }
+            	    public Sms.IRepository.IItemUnionCategory IItemUnionCategory
+        {
+           get
+           {
+               return new Sms.Repository.ItemUnionCategory();
+           }
+        }
+            	    public Sms.IRepository.IOrders IOrders
+        {
+           get
+           {
+               return new Sms.Repository.Orders();
+           }
+        }
+            	    public Sms.IRepository.IOrdersDetail IOrdersDetail
+        {
+           get
+           {
+               return new Sms.Repository.OrdersDetail();
+           }
+        }
          public async Task<int> SaveChanges()
          {
              return await Sms.Entity.OperationContext.SaveChanges();
@@ -135,6 +191,38 @@ namespace Sms.Repository
          }
     
          public partial class WeChatMember:BaseRepository<Sms.Entity.WeChatMember>,Sms.IRepository.IWeChatMember
+         {
+         }
+    
+         public partial class WechatMemberPointsLog:BaseRepository<Sms.Entity.WechatMemberPointsLog>,Sms.IRepository.IWechatMemberPointsLog
+         {
+         }
+    
+         public partial class ItemBrand:BaseRepository<Sms.Entity.ItemBrand>,Sms.IRepository.IItemBrand
+         {
+         }
+    
+         public partial class ItemCategory:BaseRepository<Sms.Entity.ItemCategory>,Sms.IRepository.IItemCategory
+         {
+         }
+    
+         public partial class ItemInfo:BaseRepository<Sms.Entity.ItemInfo>,Sms.IRepository.IItemInfo
+         {
+         }
+    
+         public partial class ItemSku:BaseRepository<Sms.Entity.ItemSku>,Sms.IRepository.IItemSku
+         {
+         }
+    
+         public partial class ItemUnionCategory:BaseRepository<Sms.Entity.ItemUnionCategory>,Sms.IRepository.IItemUnionCategory
+         {
+         }
+    
+         public partial class Orders:BaseRepository<Sms.Entity.Orders>,Sms.IRepository.IOrders
+         {
+         }
+    
+         public partial class OrdersDetail:BaseRepository<Sms.Entity.OrdersDetail>,Sms.IRepository.IOrdersDetail
          {
          }
     

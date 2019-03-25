@@ -36,5 +36,12 @@ namespace Sms.Entity
         public virtual DbSet<SystemUser> SystemUser { get; set; }
         public virtual DbSet<WeChatMember> WeChatMember { get; set; }
         public virtual DbSet<WechatMemberPointsLog> WechatMemberPointsLog { get; set; }
+        public virtual DbSet<ItemBrand> ItemBrand { get; set; }
+        public virtual DbSet<ItemCategory> ItemCategory { get; set; }
+        public virtual DbSet<ItemInfo> ItemInfo { get; set; }
+        public virtual DbSet<ItemSku> ItemSku { get; set; }
+        public virtual DbSet<ItemUnionCategory> ItemUnionCategory { get; set; }
+        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<OrdersDetail> OrdersDetail { get; set; }
     }
 }

@@ -52,6 +52,78 @@ namespace Sms.Common
         }
 
         /// <summary>
+        /// 订单状态
+        /// </summary>
+        public enum OrderStatus
+        {
+            /// <summary>
+            /// 已提交、待支付
+            /// </summary>
+            [Description("已提交")]
+            Created = 1,
+
+            /// <summary>
+            /// 已支付、待发货
+            /// </summary>
+            [Description("待发货")]
+            WaitSendGoods = 2,
+
+            /// <summary>
+            /// 已发货
+            /// </summary>
+            [Description("已发货")]
+            Delivery = 3,
+
+            /// <summary>
+            /// 交易成功
+            /// </summary>
+            [Description("交易成功")]
+            Success = 4,
+
+            /// <summary>
+            /// 交易关闭
+            /// </summary>
+            [Description("交易关闭")]
+            Close = 9
+        }
+
+        /// <summary>
+        /// 订单支付状态
+        /// </summary>
+        public enum OrderPayStatus
+        {
+            /// <summary>
+            /// 未支付
+            /// </summary>
+            [Description("未支付")]
+            Unpay = 0,
+
+            /// <summary>
+            /// 已支付
+            /// </summary>
+            [Description("已支付")]
+            Paied = 1
+        }
+
+        /// <summary>
+        /// 订单支付方式
+        /// </summary>
+        public enum OrderPayMode
+        {
+            /// <summary>
+            /// 微信支付
+            /// </summary>
+            [Description("微信支付")]
+            WechatPay = 1,
+
+            /// <summary>
+            /// 支付宝
+            /// </summary>
+            [Description("支付宝")]
+            AliPay = 2
+        }
+
+        /// <summary>
         /// 促销类型
         /// </summary>
         public enum PromotionType

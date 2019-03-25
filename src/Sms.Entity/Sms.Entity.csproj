@@ -54,10 +54,31 @@
     <Compile Include="CardHistory.cs">
       <DependentUpon>SmsEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="ItemBrand.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ItemCategory.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ItemInfo.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ItemSku.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ItemUnionCategory.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="MemberCard.cs">
       <DependentUpon>SmsEntity.tt</DependentUpon>
     </Compile>
     <Compile Include="OperationContext.cs" />
+    <Compile Include="Orders.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OrdersDetail.cs">
+      <DependentUpon>SmsEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="Promotion.cs">
       <DependentUpon>SmsEntity.tt</DependentUpon>
     </Compile>

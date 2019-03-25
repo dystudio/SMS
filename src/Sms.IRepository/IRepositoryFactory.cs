@@ -29,6 +29,14 @@ namespace Sms.IRepository
     	ISystemRoleRight ISystemRoleRight{get;}
     	ISystemUser ISystemUser{get;}
     	IWeChatMember IWeChatMember{get;}
+    	IWechatMemberPointsLog IWechatMemberPointsLog{get;}
+    	IItemBrand IItemBrand{get;}
+    	IItemCategory IItemCategory{get;}
+    	IItemInfo IItemInfo{get;}
+    	IItemSku IItemSku{get;}
+    	IItemUnionCategory IItemUnionCategory{get;}
+    	IOrders IOrders{get;}
+    	IOrdersDetail IOrdersDetail{get;}
         Task<int> SaveChanges();
     }
     
@@ -69,6 +77,38 @@ namespace Sms.IRepository
     }
     
     public partial interface IWeChatMember:IBaseRepository<Sms.Entity.WeChatMember>
+    {
+    }
+    
+    public partial interface IWechatMemberPointsLog:IBaseRepository<Sms.Entity.WechatMemberPointsLog>
+    {
+    }
+    
+    public partial interface IItemBrand:IBaseRepository<Sms.Entity.ItemBrand>
+    {
+    }
+    
+    public partial interface IItemCategory:IBaseRepository<Sms.Entity.ItemCategory>
+    {
+    }
+    
+    public partial interface IItemInfo:IBaseRepository<Sms.Entity.ItemInfo>
+    {
+    }
+    
+    public partial interface IItemSku:IBaseRepository<Sms.Entity.ItemSku>
+    {
+    }
+    
+    public partial interface IItemUnionCategory:IBaseRepository<Sms.Entity.ItemUnionCategory>
+    {
+    }
+    
+    public partial interface IOrders:IBaseRepository<Sms.Entity.Orders>
+    {
+    }
+    
+    public partial interface IOrdersDetail:IBaseRepository<Sms.Entity.OrdersDetail>
     {
     }
     

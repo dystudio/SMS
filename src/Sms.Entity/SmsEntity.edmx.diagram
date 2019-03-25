@@ -19,6 +19,18 @@
         <AssociationConnector Association="SmsModel.FK_SystemRoleRight_SystemRole" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SmsModel.WeChatMember" Width="1.5" PointX="8.375" PointY="9.75" />
         <EntityTypeShape EntityType="SmsModel.WechatMemberPointsLog" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="SmsModel.ItemBrand" Width="1.5" PointX="10.75" PointY="6.25" />
+        <EntityTypeShape EntityType="SmsModel.ItemCategory" Width="1.5" PointX="13" PointY="1.375" />
+        <EntityTypeShape EntityType="SmsModel.ItemInfo" Width="1.5" PointX="13" PointY="5.375" />
+        <EntityTypeShape EntityType="SmsModel.ItemSku" Width="1.5" PointX="15.25" PointY="9.125" />
+        <EntityTypeShape EntityType="SmsModel.ItemUnionCategory" Width="1.5" PointX="15.25" PointY="5.75" />
+        <EntityTypeShape EntityType="SmsModel.Orders" Width="1.5" PointX="0.75" PointY="12" />
+        <EntityTypeShape EntityType="SmsModel.OrdersDetail" Width="1.5" PointX="3" PointY="12.5" />
+        <AssociationConnector Association="SmsModel.FK_ItemInfo_ItemBrand" />
+        <AssociationConnector Association="SmsModel.FK_ItemUnionCategory_ItemCategory" />
+        <AssociationConnector Association="SmsModel.FK_ItemSku_ItemInfo" />
+        <AssociationConnector Association="SmsModel.FK_ItemUnionCategory_ItemInfo" />
+        <AssociationConnector Association="SmsModel.FK_OrderDetail_Orders" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
