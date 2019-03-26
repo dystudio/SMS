@@ -68,14 +68,25 @@
             margin-bottom: 0px;
             text-align: center;
         }
-        .row-fluid{
-            margin-top:0 !important;
+
+        .row-fluid {
+            margin-top: 0 !important;
         }
-        .nopadding .table-bordered .center{
-            vertical-align:middle;
+
+        .nopadding .table-bordered .center {
+            vertical-align: middle;
         }
-        .form-horizontal .actions input,button{
-            margin-left:10px;
+
+        .form-horizontal .action-g {
+            display: inline-block;
+        }
+
+        .form-horizontal .action {
+            float: right;
+        }
+
+        .form-horizontal .action-g .btn {
+            margin-left: 10px;
         }
     </style>
     @RenderSection("head", required: false)

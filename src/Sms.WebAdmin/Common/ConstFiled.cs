@@ -20,7 +20,7 @@ namespace Sms.WebAdmin.Common
         /// <summary>
         /// 菜单的缓存key
         /// </summary>
-        public static readonly string GlobalMenu = "MenuCache";
+        public static readonly string GlobalMenu = "MenuCache_";
 
         /// <summary>
         /// openid加密key

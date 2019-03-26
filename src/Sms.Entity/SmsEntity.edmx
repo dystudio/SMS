@@ -58,8 +58,8 @@
           <Property Name="Banner" Type="nvarchar" MaxLength="500" />
           <Property Name="BrandId" Type="int" Nullable="false" />
           <Property Name="IsOnSale" Type="bit" Nullable="false" />
-          <Property Name="IsHot" Type="int" Nullable="false" />
-          <Property Name="IsTop" Type="int" Nullable="false" />
+          <Property Name="IsHot" Type="bit" Nullable="false" />
+          <Property Name="IsTop" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="Sort" Type="int" Nullable="false" />
           <Property Name="MarketPrice" Type="decimal" Precision="18" Scale="2" />
@@ -597,18 +597,22 @@
           <EntitySet Name="WechatMemberPointsLog" EntityType="SmsModel.WechatMemberPointsLog" />
           <EntitySet Name="ItemBrand" EntityType="SmsModel.ItemBrand" />
           <EntitySet Name="ItemCategory" EntityType="SmsModel.ItemCategory" />
-          <EntitySet Name="ItemInfo" EntityType="SmsModel.ItemInfo" />
           <EntitySet Name="ItemSku" EntityType="SmsModel.ItemSku" />
           <EntitySet Name="ItemUnionCategory" EntityType="SmsModel.ItemUnionCategory" />
           <EntitySet Name="Orders" EntityType="SmsModel.Orders" />
           <EntitySet Name="OrdersDetail" EntityType="SmsModel.OrdersDetail" />
-          <AssociationSet Name="FK_ItemInfo_ItemBrand" Association="SmsModel.FK_ItemInfo_ItemBrand">
-            <End Role="ItemBrand" EntitySet="ItemBrand" />
-            <End Role="ItemInfo" EntitySet="ItemInfo" />
-          </AssociationSet>
           <AssociationSet Name="FK_ItemUnionCategory_ItemCategory" Association="SmsModel.FK_ItemUnionCategory_ItemCategory">
             <End Role="ItemCategory" EntitySet="ItemCategory" />
             <End Role="ItemUnionCategory" EntitySet="ItemUnionCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrderDetail_Orders" Association="SmsModel.FK_OrderDetail_Orders">
+            <End Role="Orders" EntitySet="Orders" />
+            <End Role="OrdersDetail" EntitySet="OrdersDetail" />
+          </AssociationSet>
+          <EntitySet Name="ItemInfo" EntityType="SmsModel.ItemInfo" />
+          <AssociationSet Name="FK_ItemInfo_ItemBrand" Association="SmsModel.FK_ItemInfo_ItemBrand">
+            <End Role="ItemBrand" EntitySet="ItemBrand" />
+            <End Role="ItemInfo" EntitySet="ItemInfo" />
           </AssociationSet>
           <AssociationSet Name="FK_ItemSku_ItemInfo" Association="SmsModel.FK_ItemSku_ItemInfo">
             <End Role="ItemInfo" EntitySet="ItemInfo" />
@@ -617,10 +621,6 @@
           <AssociationSet Name="FK_ItemUnionCategory_ItemInfo" Association="SmsModel.FK_ItemUnionCategory_ItemInfo">
             <End Role="ItemInfo" EntitySet="ItemInfo" />
             <End Role="ItemUnionCategory" EntitySet="ItemUnionCategory" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OrderDetail_Orders" Association="SmsModel.FK_OrderDetail_Orders">
-            <End Role="Orders" EntitySet="Orders" />
-            <End Role="OrdersDetail" EntitySet="OrdersDetail" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="WeChatMember">
@@ -686,30 +686,6 @@
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ItemUnionCategory" Relationship="SmsModel.FK_ItemUnionCategory_ItemCategory" FromRole="ItemCategory" ToRole="ItemUnionCategory" />
-        </EntityType>
-        <EntityType Name="ItemInfo">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ItemCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="SubTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Poster" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Banner" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="BrandId" Type="Int32" Nullable="false" />
-          <Property Name="IsOnSale" Type="Boolean" Nullable="false" />
-          <Property Name="IsHot" Type="Int32" Nullable="false" />
-          <Property Name="IsTop" Type="Int32" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
-          <Property Name="Sort" Type="Int32" Nullable="false" />
-          <Property Name="MarketPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="DetailDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ItemBrand" Relationship="SmsModel.FK_ItemInfo_ItemBrand" FromRole="ItemInfo" ToRole="ItemBrand" />
-          <NavigationProperty Name="ItemSku" Relationship="SmsModel.FK_ItemSku_ItemInfo" FromRole="ItemInfo" ToRole="ItemSku" />
-          <NavigationProperty Name="ItemUnionCategory" Relationship="SmsModel.FK_ItemUnionCategory_ItemInfo" FromRole="ItemInfo" ToRole="ItemUnionCategory" />
         </EntityType>
         <EntityType Name="ItemSku">
           <Key>
@@ -777,18 +753,6 @@
           <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Orders" Relationship="SmsModel.FK_OrderDetail_Orders" FromRole="OrdersDetail" ToRole="Orders" />
         </EntityType>
-        <Association Name="FK_ItemInfo_ItemBrand">
-          <End Type="SmsModel.ItemBrand" Role="ItemBrand" Multiplicity="1" />
-          <End Type="SmsModel.ItemInfo" Role="ItemInfo" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ItemBrand">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ItemInfo">
-              <PropertyRef Name="BrandId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_ItemUnionCategory_ItemCategory">
           <End Type="SmsModel.ItemCategory" Role="ItemCategory" Multiplicity="1" />
           <End Type="SmsModel.ItemUnionCategory" Role="ItemUnionCategory" Multiplicity="*" />
@@ -798,6 +762,54 @@
             </Principal>
             <Dependent Role="ItemUnionCategory">
               <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrderDetail_Orders">
+          <End Type="SmsModel.Orders" Role="Orders" Multiplicity="1" />
+          <End Type="SmsModel.OrdersDetail" Role="OrdersDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Orders">
+              <PropertyRef Name="OrderCode" />
+            </Principal>
+            <Dependent Role="OrdersDetail">
+              <PropertyRef Name="OrderCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SubTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Poster" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Banner" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BrandId" Type="Int32" Nullable="false" />
+          <Property Name="IsOnSale" Type="Boolean" Nullable="false" />
+          <Property Name="IsHot" Type="Boolean" Nullable="false" />
+          <Property Name="IsTop" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="MarketPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DetailDesc" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreateUser" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ItemBrand" Relationship="SmsModel.FK_ItemInfo_ItemBrand" FromRole="ItemInfo" ToRole="ItemBrand" />
+          <NavigationProperty Name="ItemSku" Relationship="SmsModel.FK_ItemSku_ItemInfo" FromRole="ItemInfo" ToRole="ItemSku" />
+          <NavigationProperty Name="ItemUnionCategory" Relationship="SmsModel.FK_ItemUnionCategory_ItemInfo" FromRole="ItemInfo" ToRole="ItemUnionCategory" />
+        </EntityType>
+        <Association Name="FK_ItemInfo_ItemBrand">
+          <End Type="SmsModel.ItemBrand" Role="ItemBrand" Multiplicity="1" />
+          <End Type="SmsModel.ItemInfo" Role="ItemInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ItemBrand">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ItemInfo">
+              <PropertyRef Name="BrandId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -822,18 +834,6 @@
             </Principal>
             <Dependent Role="ItemUnionCategory">
               <PropertyRef Name="ItemId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OrderDetail_Orders">
-          <End Type="SmsModel.Orders" Role="Orders" Multiplicity="1" />
-          <End Type="SmsModel.OrdersDetail" Role="OrdersDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Orders">
-              <PropertyRef Name="OrderCode" />
-            </Principal>
-            <Dependent Role="OrdersDetail">
-              <PropertyRef Name="OrderCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1032,28 +1032,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ItemInfo">
-            <EntityTypeMapping TypeName="SmsModel.ItemInfo">
-              <MappingFragment StoreEntitySet="ItemInfo">
-                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="DetailDesc" ColumnName="DetailDesc" />
-                <ScalarProperty Name="MarketPrice" ColumnName="MarketPrice" />
-                <ScalarProperty Name="Sort" ColumnName="Sort" />
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="IsTop" ColumnName="IsTop" />
-                <ScalarProperty Name="IsHot" ColumnName="IsHot" />
-                <ScalarProperty Name="IsOnSale" ColumnName="IsOnSale" />
-                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
-                <ScalarProperty Name="Banner" ColumnName="Banner" />
-                <ScalarProperty Name="Poster" ColumnName="Poster" />
-                <ScalarProperty Name="SubTitle" ColumnName="SubTitle" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ItemCode" ColumnName="ItemCode" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ItemSku">
             <EntityTypeMapping TypeName="SmsModel.ItemSku">
               <MappingFragment StoreEntitySet="ItemSku">
@@ -1115,6 +1093,28 @@
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="DetailType" ColumnName="DetailType" />
                 <ScalarProperty Name="OrderCode" ColumnName="OrderCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemInfo">
+            <EntityTypeMapping TypeName="SmsModel.ItemInfo">
+              <MappingFragment StoreEntitySet="ItemInfo">
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="DetailDesc" ColumnName="DetailDesc" />
+                <ScalarProperty Name="MarketPrice" ColumnName="MarketPrice" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsTop" ColumnName="IsTop" />
+                <ScalarProperty Name="IsHot" ColumnName="IsHot" />
+                <ScalarProperty Name="IsOnSale" ColumnName="IsOnSale" />
+                <ScalarProperty Name="BrandId" ColumnName="BrandId" />
+                <ScalarProperty Name="Banner" ColumnName="Banner" />
+                <ScalarProperty Name="Poster" ColumnName="Poster" />
+                <ScalarProperty Name="SubTitle" ColumnName="SubTitle" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ItemCode" ColumnName="ItemCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

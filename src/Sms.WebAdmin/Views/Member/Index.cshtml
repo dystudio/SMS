@@ -17,19 +17,20 @@
             <h5>微信会员列表</h5>
             @*<h5><a href="@Url.Action("Edit")" class="">添加</a></h5>*@
         </div>
-        <div class="widget-content">
             @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "page", "" } }, new AjaxOptions { UpdateTargetId = "pager_content", HttpMethod = "Get", InsertionMode = InsertionMode.Replace, OnBegin = "$('#pager_loading').show()", OnComplete = "$('#pager_loading').hide()" }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "form-horizontal" } }))
             {
-                <div>
+                <div class="widget-content">
                     @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "昵称、手机号" })
                     @Html.DropDownList("level", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.MemberLevel)), "Value", "Key", null), "全部等级", new { @id = "level", style = "width:120px" })
-                    <div class="actions" style="display:inline">
+                    <div class="action-g search" >
                         <input type="submit" class="btn" value="搜索(S)" accesskey="S" />
                         <button class="btn  btn-primary" title="" onclick="Export();return false;"><i class="icon-download-alt  icon-white"></i>  导出</button>
                     </div>
+                    <div class="action-g action" >
+                        <a class="btn btn-xs" href="@Url.Action("Edit")" class="">添加</a><a class="btn btn-xs" href="@Url.Action("Edit")" class="">添加</a>
+                    </div>
                 </div>
             }
-        </div>
         <div id="pager_loading" style="display:none;margin:15px;text-align:center"><img src="~/Content/img/spinner.gif" /></div>
         <div id="pager_content">
             @Html.Partial("_PartialMemberList", Model)

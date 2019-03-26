@@ -18,17 +18,17 @@ namespace Sms.WebAdmin.Controllers
         {
             var list = _repositoryFactory.IItemInfo.Where(c => c.IsDelete == false);
             //搜索关键字过滤
-            if (level.HasValue)
-            {
-                list = list.Where(c => c.BrandId == level.Value);
-            }
+            //if (level.HasValue)
+            //{
+            //    list = list.Where(c => c.BrandId == level.Value);
+            //}
             if (!string.IsNullOrEmpty(keyword))
             {
                 list = list.Where(c => c.Title.Contains(keyword) || c.ItemCode.Equals(keyword));
             }
             var pagerList = list.Include(x => x.ItemBrand).OrderByDescending(c => c.CreateTime).ToPagedList(PageIndex, ConstFiled.PageSize);
             if (Request.IsAjaxRequest())
-                return PartialView("_PartialItemList", pagerList);
+                return PartialView("_PartialItemsList", pagerList);
             return View(pagerList);
         }
     }

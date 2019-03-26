@@ -29,8 +29,8 @@ namespace Sms.Entity
         public string Banner { get; set; }
         public int BrandId { get; set; }
         public bool IsOnSale { get; set; }
-        public int IsHot { get; set; }
-        public int IsTop { get; set; }
+        public bool IsHot { get; set; }
+        public bool IsTop { get; set; }
         public bool IsDelete { get; set; }
         public int Sort { get; set; }
         public Nullable<decimal> MarketPrice { get; set; }
