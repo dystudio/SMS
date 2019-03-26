@@ -1,0 +1,87 @@
+﻿
+@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.Orders>
+
+<div class="widget-content nopadding">
+    <table class="table table-bordered table-striped with-check">
+        <thead>
+            <tr>
+                <th>订单编号</th>
+                <th style="width: 13%">openid</th>
+                <th>订单类型</th>
+                <th>订单状态</th>
+                <th>订单金额</th>
+                <th>支付方式</th>
+                <th>支付时间</th>
+                <th>收货人</th>
+                <th>买家留言</th>
+                <th>下单时间</th>
+                <th>最后更新时间</th>
+                <th>快递公司</th>
+                <th>快递单号</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="center">@item.OrderCode</td>
+                            <td class="" style="width: 13%;">  @item.OpenId </td>
+                            <td class="center">@(EnumHepler.GetEnumDescription((EnumHepler.MemberLevel)item.OrderType))</td>
+                            <td class="center">@(EnumHepler.GetEnumDescription((EnumHepler.MemberLevel)item.OrderStatus))</td>
+                            <td class="center">@item.ActualPrice</td>
+                            <td class="center">@(EnumHepler.GetEnumDescription((EnumHepler.MemberLevel)item.PayMode))</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.PayTime)</td>
+                            <td class="center">@item.ReceiverName</td>
+                            <td class="center">@item.Remark</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.LastUpdateTime)</td>
+                            <td class="center">@item.LogisticsCompany</td>
+                            <td class="center">@item.LogisticsNo</td>
+                            <td class="center"></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr style="">
+                        <td colspan="14">
+                            <div class="list-none-data">  -- 暂无记录 -- </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="center">
+    <div class="dataTables_paginate paging_bootstrap pagination" style="height:35px">
+        <div style="float:left;margin: 6px 15px;font-family: fantasy">共 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex / @Model.TotalPageCount 页</div>
+        @Ajax.Pager(Model, new PagerOptions
+   {
+       PageIndexParameterName = "page",
+       ContainerTagName = "ul",
+       DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+       PagerItemTemplate = "<li>{0}</li>",
+       CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+       PrevPageText = "上一页",
+       NextPageText = "下一页",
+       ShowFirstLast = false
+   }, new MvcAjaxOptions
+   {
+       UpdateTargetId = "pager_content",
+       DataFormId = "searchForm",
+       LoadingElementId = "pager_loading",
+       OnBegin = "$('#pager_content').hide()",
+       OnComplete = "$('#pager_content').show()"
+   })
+    </div>
+</div>
+

@@ -1,0 +1,84 @@
+﻿@using Webdiyer.WebControls.Mvc
+@using Sms.Common
+
+@model  PagedList<Sms.Entity.ItemInfo>
+
+<div class="widget-content nopadding">
+    <table class="table table-bordered table-striped with-check">
+        <thead>
+            <tr>
+                <th>商品编码</th>
+                <th style="width: 13%">商品名称</th>
+                <th>类别</th>
+                <th>品牌</th>
+                <th>是否上架</th>
+                <th>是否热销</th>
+                <th>是否置顶</th>
+                <th>排序</th>
+                <th>市场价</th>
+                <th>创建时间</th>
+                <th>创建人</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model.Count > 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="center">@item.ItemCode</td>
+                            <td class="" style="width: 13%;">  @item.Title </td>
+                            <td class="center"></td>
+                            <td class="center">@item.ItemBrand.Name</td>                            
+                            <td class="center">@(item.IsOnSale? "<i class=\"icon-ok\"></i>" : "")</td>
+                            <td class="center">@(item.IsHot==1 ? "<i class=\"icon-ok\"></i>" : "")</td>
+                            <td class="center">@(item.IsTop ==1? "<i class=\"icon-ok\"></i>" : "")</td>
+                            <td class="center">@item.Sort</td>
+                            <td class="center">@item.MarketPrice</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateTime)</td>
+                            <td class="center">@string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CreateUser)</td>
+                            <td class="center">
+                                
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr style="">
+                        <td colspan="12">
+                            <div class="list-none-data">  -- 暂无记录 -- </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="center">
+    <div class="dataTables_paginate paging_bootstrap pagination" style="height:35px">
+        <div style="float:left;margin: 6px 15px;font-family: fantasy">共 @Model.TotalItemCount 条记录，当前为第 @Model.CurrentPageIndex / @Model.TotalPageCount 页</div>
+        @Ajax.Pager(Model, new PagerOptions
+   {
+       PageIndexParameterName = "page",
+       ContainerTagName = "ul",
+       DisabledPagerItemTemplate = "<li class=\"disabled\"><a>{0}</a></li>",
+       PagerItemTemplate = "<li>{0}</li>",
+       CurrentPagerItemTemplate = "<li class=\"active\"><a>{0}</a></li>",
+       PrevPageText = "上一页",
+       NextPageText = "下一页",
+       ShowFirstLast = false
+   }, new MvcAjaxOptions
+   {
+       UpdateTargetId = "pager_content",
+       DataFormId = "searchForm",
+       LoadingElementId = "pager_loading",
+       OnBegin = "$('#pager_content').hide()",
+       OnComplete = "$('#pager_content').show()"
+   })
+    </div>
+</div>
+

@@ -1,11 +1,11 @@
 ﻿@using Webdiyer.WebControls.Mvc
 @using Sms.Common
 
-@model  PagedList<Sms.Entity.WeChatMember>
+@model  PagedList<Sms.Entity.ItemInfo>
 
 <div id="breadcrumb">
-    <a href="javascript:void(0);" class="tip-bottom">会员管理</a>
-    <a href="javascript:void(0);" class="current">会员信息</a>
+    <a href="javascript:void(0);" class="tip-bottom">商品管理</a>
+    <a href="javascript:void(0);" class="current">商品信息</a>
 </div>
 
 <div class="container-fluid">
@@ -14,14 +14,14 @@
             <span class="icon">
                 <a class="icon-list"></a>
             </span>
-            <h5>微信会员列表</h5>
+            <h5>商品信息列表</h5>
             @*<h5><a href="@Url.Action("Edit")" class="">添加</a></h5>*@
         </div>
         <div class="widget-content">
             @using (Ajax.BeginForm("Index", new RouteValueDictionary { { "page", "" } }, new AjaxOptions { UpdateTargetId = "pager_content", HttpMethod = "Get", InsertionMode = InsertionMode.Replace, OnBegin = "$('#pager_loading').show()", OnComplete = "$('#pager_loading').hide()" }, new RouteValueDictionary { { "id", "searchForm" }, { "class", "form-horizontal" } }))
             {
                 <div>
-                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "昵称、手机号" })
+                    @Html.TextBox("keyword", "", new { @id = "keyword", type = "search", placeholder = "商品编码、商品名称" })
                     @Html.DropDownList("level", new SelectList(EnumHepler.GetEnumData(typeof(EnumHepler.MemberLevel)), "Value", "Key", null), "全部等级", new { @id = "level", style = "width:120px" })
                     <div class="actions" style="display:inline">
                         <input type="submit" class="btn" value="搜索(S)" accesskey="S" />
@@ -32,7 +32,7 @@
         </div>
         <div id="pager_loading" style="display:none;margin:15px;text-align:center"><img src="~/Content/img/spinner.gif" /></div>
         <div id="pager_content">
-            @Html.Partial("_PartialMemberList", Model)
+            @Html.Partial("_PartialItemsList", Model)
         </div>
     </div>
 </div>
